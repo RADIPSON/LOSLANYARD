@@ -7,10 +7,6 @@
   
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  
-  <!-- Libraries for QR Code and Image Download -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 
   <style>
     :root {
@@ -292,13 +288,24 @@
     const urlParams = new URLSearchParams(window.location.search);
     const employeeId = urlParams.get('id');
 
-    window.onload = () => {
-      if (!employeeId) {
-        showSearchForm();
-      } else {
-        fetchData(employeeId);
-      }
-    };
+    // Langsung dieksekusi, tidak menunggu window.onload agar tidak terhalang loading gambar/aset lambat
+    if (!employeeId) {
+      showSearchForm();
+    } else {
+      fetchData(employeeId);
+    }
+
+    // Fungsi untuk meload library external hanya saat dibutuhkan (menghindari error loading terus-menerus di awal)
+    function loadScript(src) {
+      return new Promise((resolve, reject) => {
+        if (document.querySelector(`script[src="${src}"]`)) return resolve();
+        const script = document.createElement('script');
+        script.src = src;
+        script.onload = resolve;
+        script.onerror = reject;
+        document.head.appendChild(script);
+      });
+    }
 
     function showSearchForm() {
       document.getElementById('app').innerHTML = `
@@ -386,43 +393,51 @@
     }
 
     function downloadVirtualID(empId) {
-      const target = document.getElementById('capture-id');
       const btn = document.getElementById('btn-download');
-      
       const originalText = btn.innerHTML;
-      btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Memproses...';
+      btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Menyiapkan...';
       btn.style.opacity = '0.8';
 
-      target.style.boxShadow = 'none';
-      target.style.borderRadius = '0';
-      target.style.margin = '0';
+      // Load html2canvas dynamically
+      loadScript('https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js')
+        .then(() => {
+          const target = document.getElementById('capture-id');
+          target.style.boxShadow = 'none';
+          target.style.borderRadius = '0';
+          target.style.margin = '0';
 
-      html2canvas(target, {
-        scale: 2,
-        useCORS: true,
-        backgroundColor: '#ffffff'
-      }).then(canvas => {
-        target.style.boxShadow = '';
-        target.style.borderRadius = '';
-        target.style.margin = '';
-        
-        const link = document.createElement('a');
-        link.download = `ID_Card_${empId}.png`;
-        link.href = canvas.toDataURL('image/png');
-        link.click();
-        
-        btn.innerHTML = originalText;
-        btn.style.opacity = '1';
-        showToast('ID Card berhasil diunduh!');
-      }).catch(err => {
-        target.style.boxShadow = '';
-        target.style.borderRadius = '';
-        target.style.margin = '';
-        btn.innerHTML = originalText;
-        btn.style.opacity = '1';
-        showToast('Gagal membuat gambar ID Card');
-        console.error(err);
-      });
+          html2canvas(target, {
+            scale: 2,
+            useCORS: true,
+            backgroundColor: '#ffffff'
+          }).then(canvas => {
+            target.style.boxShadow = '';
+            target.style.borderRadius = '';
+            target.style.margin = '';
+            
+            const link = document.createElement('a');
+            link.download = `ID_Card_${empId}.png`;
+            link.href = canvas.toDataURL('image/png');
+            link.click();
+            
+            btn.innerHTML = originalText;
+            btn.style.opacity = '1';
+            showToast('ID Card berhasil diunduh!');
+          }).catch(err => {
+            target.style.boxShadow = '';
+            target.style.borderRadius = '';
+            target.style.margin = '';
+            btn.innerHTML = originalText;
+            btn.style.opacity = '1';
+            showToast('Gagal membuat gambar ID Card');
+            console.error(err);
+          });
+        })
+        .catch(err => {
+          btn.innerHTML = originalText;
+          btn.style.opacity = '1';
+          showToast('Gagal memuat library. Pastikan internet lancar.');
+        });
     }
 
     function renderData(data) {
@@ -560,15 +575,21 @@
         </div>
       `;
 
-      // Generate QR Code
-      new QRCode(document.getElementById("qrcode"), {
-        text: currentUrl,
-        width: 150,
-        height: 150,
-        colorDark : "#0a4f2b",
-        colorLight : "#ffffff",
-        correctLevel : QRCode.CorrectLevel.H
-      });
+      // Generate QR Code dynamically
+      loadScript('https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js')
+        .then(() => {
+          new QRCode(document.getElementById("qrcode"), {
+            text: currentUrl,
+            width: 150,
+            height: 150,
+            colorDark : "#0a4f2b",
+            colorLight : "#ffffff",
+            correctLevel : QRCode.CorrectLevel.H
+          });
+        })
+        .catch(err => {
+          document.getElementById("qrcode").innerHTML = "<p style='color:red;font-size:12px;'>Gagal memuat QR Code</p>";
+        });
 
       // Setup scroll spy for tabs
       setupScrollSpy();
