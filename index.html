@@ -72,7 +72,7 @@
 
     .container { max-width: 800px; margin: 0 auto; padding: 30px 20px; }
 
-    /* Main Profile Card (ID Card) */
+    /* Main Profile Header */
     .profile-hero {
       background: var(--white);
       border-radius: 16px;
@@ -84,14 +84,6 @@
       margin-bottom: 24px;
       position: relative;
       overflow: hidden;
-    }
-    /* Decorate ID card for html2canvas */
-    .profile-hero::before {
-      content: '';
-      position: absolute;
-      top: 0; left: 0; right: 0;
-      height: 8px;
-      background: var(--primary);
     }
     .hero-avatar {
       width: 140px; height: 140px;
@@ -111,7 +103,7 @@
     /* Sticky Nav Tabs Wrapper */
     .nav-tabs-wrapper {
       position: sticky;
-      top: 56px; /* Below header */
+      top: 56px;
       z-index: 90;
       background: var(--bg-light);
       padding: 10px 0;
@@ -157,6 +149,7 @@
       padding: 24px;
       box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
       margin-bottom: 24px;
+      scroll-margin-top: 140px; 
     }
     .section-header {
       font-size: 18px; font-weight: 700; color: var(--text-dark); margin-bottom: 20px;
@@ -171,7 +164,8 @@
     .info-value { font-size: 15px; color: var(--text-dark); font-weight: 600; }
 
     /* Contact List */
-    .contact-item { display: flex; align-items: center; justify-content: space-between; }
+    .contact-item { display: flex; align-items: center; justify-content: space-between; padding: 16px 0; border-bottom: 1px solid var(--border); }
+    .contact-item:last-child { border-bottom: none; padding-bottom: 0; }
     .contact-left { display: flex; align-items: center; gap: 16px; }
     .contact-avatar { width: 48px; height: 48px; border-radius: 50%; background: var(--primary-light); color: var(--primary); display: flex; align-items: center; justify-content: center; font-size: 20px; }
     .contact-name { font-weight: 700; color: var(--text-dark); margin-bottom: 4px; }
@@ -184,65 +178,46 @@
     .btn-whatsapp { background: #25D366; color: var(--white); }
     .btn-primary { background: var(--primary); color: white; }
     .btn-green { background: #10b981; color: white; }
+    .btn-link { background: var(--white); color: var(--text-dark); border: 1px solid var(--border); width: 100%; justify-content: flex-start; padding: 16px; margin-bottom: 12px; }
 
-    /* Share & ID Card Section */
-    .action-box {
-      background: var(--bg-light);
-      border-radius: 12px;
-      padding: 20px;
-      text-align: center;
-      margin-top: 10px;
-      border: 1px dashed var(--border);
+    /* Org Chart */
+    .org-chart { display: flex; flex-direction: column; align-items: center; padding: 20px 0; }
+    .org-node { background: var(--white); border: 1px solid var(--border); border-radius: 8px; padding: 12px 20px; text-align: center; min-width: 220px; position: relative; }
+    .org-node.active { background: var(--primary-light); border-color: var(--primary); border-width: 2px; }
+    .org-title { font-size: 12px; color: var(--text-gray); font-weight: 600; margin-bottom: 4px; }
+    .org-node.active .org-title { color: var(--primary); }
+    .org-name { font-size: 14px; font-weight: 700; color: var(--text-dark); }
+    .org-line { width: 2px; height: 30px; background: var(--border); }
+
+    /* Virtual ID Card Preview */
+    .id-card-wrapper {
+      width: 100%; max-width: 320px; margin: 0 auto;
+      background: var(--white); border-radius: 16px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+      overflow: hidden; position: relative;
     }
-    .url-input-group {
-      display: flex;
-      gap: 10px;
-      margin-top: 16px;
+    .id-card-header {
+      background: var(--primary); padding: 20px; text-align: center; color: var(--white);
     }
-    .url-input {
-      flex: 1;
-      padding: 12px;
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      background: var(--white);
-      color: var(--text-gray);
-      font-size: 14px;
-      outline: none;
+    .id-card-body { padding: 30px 20px; text-align: center; }
+    .id-card-footer {
+      background: var(--primary-light); padding: 12px; text-align: center; font-size: 11px; color: var(--primary); font-weight: 600;
     }
-    #qrcode {
-      display: flex;
-      justify-content: center;
-      margin-top: 20px;
-      padding: 16px;
-      background: var(--white);
-      border-radius: 12px;
-      display: inline-block;
-      box-shadow: 0 4px 6px rgba(0,0,0,0.05);
-    }
-    #qrcode img { margin: 0 auto; border-radius: 8px; }
+
+    .url-input-group { display: flex; gap: 10px; margin-top: 16px; }
+    .url-input { flex: 1; padding: 12px; border: 1px solid var(--border); border-radius: 8px; background: var(--white); color: var(--text-gray); font-size: 14px; outline: none; }
+    
+    #qrcode, #idcard-qrcode { display: inline-block; padding: 16px; background: var(--white); border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
+    #idcard-qrcode { box-shadow: none; padding: 0; margin-top: 20px; }
+    #idcard-qrcode img { margin: 0 auto; border-radius: 6px; }
 
     .toast {
-      position: fixed;
-      bottom: 20px;
-      left: 50%;
-      transform: translateX(-50%) translateY(100px);
-      background: #111827;
-      color: white;
-      padding: 12px 24px;
-      border-radius: 30px;
-      font-size: 14px;
-      font-weight: 500;
-      opacity: 0;
-      transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
-      z-index: 1000;
-      box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+      position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%) translateY(100px);
+      background: #111827; color: white; padding: 12px 24px; border-radius: 30px;
+      font-size: 14px; font-weight: 500; opacity: 0; transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55); z-index: 1000; box-shadow: 0 10px 20px rgba(0,0,0,0.2);
     }
-    .toast.show {
-      transform: translateX(-50%) translateY(0);
-      opacity: 1;
-    }
+    .toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
 
-    /* Utilities */
     .loading-screen { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 60vh; color: var(--text-gray); }
     .footer-dark { background: var(--primary); color: var(--white); text-align: center; padding: 24px; font-size: 13px; margin-top: 40px; }
     
@@ -258,7 +233,6 @@
 </head>
 <body>
 
-  <!-- Header -->
   <header class="app-header">
     <div class="app-header-logo">Los Ciken</div>
     <div class="app-header-title">Profil Karyawan <i class="fas fa-check-circle"></i></div>
@@ -274,11 +248,10 @@
     </div>
   </div>
 
-  <div id="toast" class="toast">Berhasil disalin!</div>
+  <div id="toast" class="toast">Notifikasi</div>
 
-  <!-- Footer -->
   <footer class="footer-dark">
-    <div style="margin-bottom: 8px;"><i class="fas fa-shield-check"></i> Data bersifat rahasia. Hanya untuk keperluan internal Los Ciken.</div>
+    <div style="margin-bottom: 8px;"><i class="fas fa-shield-check"></i> Data bersifat rahasia. Hanya untuk keperluan internal.</div>
     <div>&copy; 2024 Los Ciken. All rights reserved.</div>
   </footer>
 
@@ -288,14 +261,12 @@
     const urlParams = new URLSearchParams(window.location.search);
     const employeeId = urlParams.get('id');
 
-    // Langsung dieksekusi, tidak menunggu window.onload agar tidak terhalang loading gambar/aset lambat
     if (!employeeId) {
       showSearchForm();
     } else {
       fetchData(employeeId);
     }
 
-    // Fungsi untuk meload library external hanya saat dibutuhkan (menghindari error loading terus-menerus di awal)
     function loadScript(src) {
       return new Promise((resolve, reject) => {
         if (document.querySelector(`script[src="${src}"]`)) return resolve();
@@ -343,7 +314,6 @@
       `;
     }
 
-    // Scroll Observer for sticky tabs highlighting
     function setupScrollSpy() {
       const sections = document.querySelectorAll('.section-card');
       const tabs = document.querySelectorAll('.nav-tab');
@@ -361,7 +331,6 @@
           tab.classList.remove('active');
           if (tab.getAttribute('data-target') === current) {
             tab.classList.add('active');
-            // Auto scroll the horizontal tabs if out of view
             tab.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
           }
         });
@@ -384,12 +353,22 @@
     }
 
     function copyLink() {
-      const url = window.location.href;
-      navigator.clipboard.writeText(url).then(() => {
+      navigator.clipboard.writeText(window.location.href).then(() => {
         showToast('Link berhasil disalin!');
-      }).catch(err => {
-        showToast('Gagal menyalin link');
-      });
+      }).catch(() => showToast('Gagal menyalin link'));
+    }
+
+    function downloadQR() {
+      const qrImg = document.querySelector('#qrcode img');
+      if (qrImg && qrImg.src) {
+        const link = document.createElement('a');
+        link.download = `QR_Profile_${employeeId}.png`;
+        link.href = qrImg.src;
+        link.click();
+        showToast('QR Code berhasil diunduh!');
+      } else {
+        showToast('Gambar QR Code belum siap.');
+      }
     }
 
     function downloadVirtualID(empId) {
@@ -398,58 +377,83 @@
       btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Menyiapkan...';
       btn.style.opacity = '0.8';
 
-      // Load html2canvas dynamically
       loadScript('https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js')
         .then(() => {
-          const target = document.getElementById('capture-id');
+          const target = document.getElementById('virtual-id-preview');
           target.style.boxShadow = 'none';
-          target.style.borderRadius = '0';
-          target.style.margin = '0';
-
-          html2canvas(target, {
-            scale: 2,
-            useCORS: true,
-            backgroundColor: '#ffffff'
-          }).then(canvas => {
+          
+          html2canvas(target, { scale: 3, useCORS: true, allowTaint: true, backgroundColor: null }).then(canvas => {
             target.style.boxShadow = '';
-            target.style.borderRadius = '';
-            target.style.margin = '';
-            
             const link = document.createElement('a');
             link.download = `ID_Card_${empId}.png`;
             link.href = canvas.toDataURL('image/png');
             link.click();
-            
             btn.innerHTML = originalText;
             btn.style.opacity = '1';
             showToast('ID Card berhasil diunduh!');
           }).catch(err => {
             target.style.boxShadow = '';
-            target.style.borderRadius = '';
-            target.style.margin = '';
             btn.innerHTML = originalText;
             btn.style.opacity = '1';
             showToast('Gagal membuat gambar ID Card');
             console.error(err);
           });
         })
-        .catch(err => {
+        .catch(() => {
           btn.innerHTML = originalText;
           btn.style.opacity = '1';
-          showToast('Gagal memuat library. Pastikan internet lancar.');
+          showToast('Gagal memuat library pemroses gambar.');
         });
     }
 
+    function buildOrgChart(divisi, jabatan, nama) {
+      let divHead = "Kepala Divisi " + divisi;
+      let d = (divisi || '').toLowerCase();
+      let j = (jabatan || '').toLowerCase();
+
+      if(d.includes("operasional")) divHead = "Kepala Divisi Operasional";
+      else if(d.includes("human resource")) divHead = "Kepala Human Resource";
+      else if(d.includes("finance")) divHead = "Kepala Divisi Finance";
+
+      let html = '<div class="org-chart">';
+      
+      if (j === 'direktur') {
+        return html + `<div class="org-node active"><div class="org-title">Direktur</div><div class="org-name">${nama}</div></div></div>`;
+      }
+      
+      html += `<div class="org-node"><div class="org-title">Direktur</div></div>`;
+      html += `<div class="org-line"></div>`;
+
+      if (j === 'wakil direktur') {
+        return html + `<div class="org-node active"><div class="org-title">Wakil Direktur</div><div class="org-name">${nama}</div></div></div>`;
+      }
+
+      html += `<div class="org-node"><div class="org-title">Wakil Direktur</div></div>`;
+      html += `<div class="org-line"></div>`;
+
+      // Check if employee is the head of division
+      if (j === divHead.toLowerCase() || j === "kepala " + d || j === "manager " + d) {
+        html += `<div class="org-node active"><div class="org-title">${jabatan}</div><div class="org-name">${nama}</div></div>`;
+      } else {
+        html += `<div class="org-node"><div class="org-title">${divHead}</div></div>`;
+        html += `<div class="org-line"></div>`;
+        html += `<div class="org-node active"><div class="org-title">${jabatan}</div><div class="org-name">${nama}</div></div>`;
+      }
+
+      return html + '</div>';
+    }
+
     function renderData(data) {
-      const waNumber = data.telepon ? data.telepon.replace(/\D/g, '') : '';
+      const waSelf = data.telepon ? data.telepon.replace(/[^0-9+]/g, '') : '';
+      const waEmergency = data.kontakDarurat.telepon ? data.kontakDarurat.telepon.replace(/[^0-9+]/g, '') : '';
       const currentUrl = window.location.href;
 
       document.getElementById('app').innerHTML = `
         <div class="container">
           
-          <!-- Hero Card (Will be captured as Virtual ID) -->
-          <div class="profile-hero" id="capture-id">
-            <img src="${data.foto}" alt="Foto Profil" class="hero-avatar" onerror="this.src='https://ui-avatars.com/api/?name=${encodeURIComponent(data.namaLengkap)}&background=0a4f2b&color=fff&size=150'">
+          <!-- Hero Card -->
+          <div class="profile-hero">
+            <img src="${data.foto}" crossorigin="anonymous" alt="Foto" class="hero-avatar" onerror="this.src='https://ui-avatars.com/api/?name=${encodeURIComponent(data.namaLengkap)}&background=0a4f2b&color=fff&size=150'">
             <div class="hero-info">
               <h1 class="hero-name">${data.namaLengkap}</h1>
               <div class="hero-jabatan">${data.jabatan}</div>
@@ -469,13 +473,16 @@
                 <i class="fas fa-user"></i> Info Pribadi
               </div>
               <div class="nav-tab" data-target="sec-kontak" onclick="scrollToSection('sec-kontak')">
-                <i class="fas fa-phone-alt"></i> Telepon Karyawan
+                <i class="fas fa-phone-alt"></i> Kontak
               </div>
-              <div class="nav-tab" data-target="sec-share" onclick="scrollToSection('sec-share')">
-                <i class="fas fa-share-alt"></i> Bagikan Link
+              <div class="nav-tab" data-target="sec-struktur" onclick="scrollToSection('sec-struktur')">
+                <i class="fas fa-sitemap"></i> Struktur
+              </div>
+              <div class="nav-tab" data-target="sec-perusahaan" onclick="scrollToSection('sec-perusahaan')">
+                <i class="fas fa-building"></i> Info Perusahaan
               </div>
               <div class="nav-tab" data-target="sec-idcard" onclick="scrollToSection('sec-idcard')">
-                <i class="fas fa-id-card"></i> Virtual ID Card
+                <i class="fas fa-id-card"></i> QR & ID Card
               </div>
             </div>
           </div>
@@ -484,114 +491,140 @@
           <div id="sec-info" class="section-card">
             <div class="section-header"><i class="fas fa-user"></i> Info Pribadi</div>
             <div class="info-grid">
-              <div class="info-item">
-                <span class="info-label">Nama Lengkap</span>
-                <span class="info-value">${data.namaLengkap}</span>
-              </div>
-              <div class="info-item">
-                <span class="info-label">Tanggal Bergabung</span>
-                <span class="info-value">${data.tanggalBergabung}</span>
-              </div>
-              <div class="info-item">
-                <span class="info-label">Divisi</span>
-                <span class="info-value">${data.divisi}</span>
-              </div>
-              <div class="info-item">
-                <span class="info-label">Email Kantor</span>
-                <span class="info-value">${data.email}</span>
-              </div>
-              <div class="info-item">
-                <span class="info-label">Jabatan</span>
-                <span class="info-value">${data.jabatan}</span>
-              </div>
-              <div class="info-item">
-                <span class="info-label">ID Karyawan</span>
-                <span class="info-value">${data.id}</span>
-              </div>
-              <div class="info-item">
-                <span class="info-label">Cabang / Penempatan</span>
-                <span class="info-value">${data.cabang}</span>
-              </div>
-              <div class="info-item">
-                <span class="info-label">Status</span>
-                <span class="info-value">
-                  <span style="background:var(--primary-light); color:var(--primary); padding:4px 10px; border-radius:12px; font-size:12px; font-weight:bold;">${data.status}</span>
-                </span>
-              </div>
+              <div class="info-item"><span class="info-label">Nama Lengkap</span><span class="info-value">${data.namaLengkap}</span></div>
+              <div class="info-item"><span class="info-label">Tanggal Bergabung</span><span class="info-value">${data.tanggalBergabung}</span></div>
+              <div class="info-item"><span class="info-label">Divisi</span><span class="info-value">${data.divisi}</span></div>
+              <div class="info-item"><span class="info-label">Email Kantor</span><span class="info-value">${data.email}</span></div>
+              <div class="info-item"><span class="info-label">Jabatan</span><span class="info-value">${data.jabatan}</span></div>
+              <div class="info-item"><span class="info-label">ID Karyawan</span><span class="info-value">${data.id}</span></div>
+              <div class="info-item"><span class="info-label">Cabang / Penempatan</span><span class="info-value">${data.cabang}</span></div>
+              <div class="info-item"><span class="info-label">Status</span><span class="info-value"><span style="background:var(--primary-light); color:var(--primary); padding:4px 10px; border-radius:12px; font-size:12px; font-weight:bold;">${data.status}</span></span></div>
             </div>
           </div>
 
-          <!-- 2. Telepon Karyawan -->
+          <!-- 2. Kontak & Telepon -->
           <div id="sec-kontak" class="section-card">
-            <div class="section-header"><i class="fas fa-phone-alt"></i> Kontak Karyawan</div>
-            <p style="color:var(--text-gray); font-size:14px; margin-bottom:20px;">Hubungi karyawan ini secara langsung melalui nomor di bawah ini.</p>
-            <div class="contact-item">
+            <div class="section-header"><i class="fas fa-phone-alt"></i> Kontak & Telepon</div>
+            
+            <p style="font-size: 13px; font-weight: 600; color: var(--text-gray); margin-bottom: 10px; text-transform: uppercase;">Hubungi Karyawan</p>
+            <div class="contact-item" style="margin-bottom: 24px;">
               <div class="contact-left">
-                <div class="contact-avatar"><i class="fas fa-user"></i></div>
-                <div>
-                  <div class="contact-name">${data.namaLengkap}</div>
-                  <div class="contact-phone">${data.telepon}</div>
-                </div>
+                <div class="contact-avatar"><i class="fas fa-user-circle"></i></div>
+                <div><div class="contact-name">${data.namaLengkap}</div><div class="contact-phone">${data.telepon}</div></div>
               </div>
               <div class="contact-actions">
-                <a href="tel:${data.telepon}" class="btn btn-outline"><i class="fas fa-phone-alt"></i> Telepon</a>
-                <a href="https://wa.me/${waNumber}" target="_blank" class="btn btn-whatsapp"><i class="fab fa-whatsapp"></i> WhatsApp</a>
+                <a href="tel:${data.telepon}" class="btn btn-outline"><i class="fas fa-phone-alt"></i> Call</a>
+                <a href="https://wa.me/${waSelf}" target="_blank" class="btn btn-whatsapp"><i class="fab fa-whatsapp"></i> WA</a>
               </div>
             </div>
+
+            <p style="font-size: 13px; font-weight: 600; color: var(--text-gray); margin-bottom: 10px; text-transform: uppercase;">Kontak Darurat</p>
+            ${data.kontakDarurat.nama && data.kontakDarurat.nama !== '-' ? `
+            <div class="contact-item" style="border: none; padding-bottom: 0;">
+              <div class="contact-left">
+                <div class="contact-avatar" style="background:#fee2e2; color:#ef4444;"><i class="fas fa-heartbeat"></i></div>
+                <div><div class="contact-name">${data.kontakDarurat.nama} (${data.kontakDarurat.hubungan})</div><div class="contact-phone">${data.kontakDarurat.telepon}</div></div>
+              </div>
+              <div class="contact-actions">
+                <a href="tel:${data.kontakDarurat.telepon}" class="btn btn-outline"><i class="fas fa-phone-alt"></i> Call</a>
+                <a href="https://wa.me/${waEmergency}" target="_blank" class="btn btn-whatsapp"><i class="fab fa-whatsapp"></i> WA</a>
+              </div>
+            </div>
+            ` : '<p style="color:var(--text-gray); font-size:14px;">Tidak ada data kontak darurat.</p>'}
           </div>
 
-          <!-- 3. Bagikan Link Profil -->
-          <div id="sec-share" class="section-card">
-            <div class="section-header"><i class="fas fa-share-alt"></i> Bagikan Halaman Profil</div>
-            <p style="color:var(--text-gray); font-size:14px;">Gunakan link atau QR Code di bawah ini untuk membagikan halaman profil karyawan ini.</p>
+          <!-- 3. Struktur Perusahaan -->
+          <div id="sec-struktur" class="section-card">
+            <div class="section-header"><i class="fas fa-sitemap"></i> Struktur Perusahaan</div>
+            ${buildOrgChart(data.divisi, data.jabatan, data.namaLengkap)}
+          </div>
+
+          <!-- 4. Info Perusahaan -->
+          <div id="sec-perusahaan" class="section-card">
+            <div class="section-header"><i class="fas fa-building"></i> Info Perusahaan</div>
+            <p style="color:var(--text-gray); margin-bottom:20px; font-size:14px;">Akses informasi penting dan kebijakan perusahaan Los Ciken melalui link berikut.</p>
+            <a href="https://radipson.github.io/LOSHRISENTERPRISE/" target="_blank" class="btn btn-link">
+              <i class="fas fa-link" style="color:var(--primary); width:20px;"></i> Portal Karyawan <i class="fas fa-external-link-alt" style="margin-left:auto; color:var(--text-light); font-size:12px;"></i>
+            </a>
+            <a href="https://docs.google.com/presentation/d/1OgLeF4CrlMTBOGWkkFsYCSpPiyH6u0eFVsOaznlgXg8/edit?slide=id.g3853d4b8791_0_0#slide=id.g3853d4b8791_0_0" target="_blank" class="btn btn-link">
+              <i class="fas fa-shield-alt" style="color:var(--primary); width:20px;"></i> Kebijakan Perusahaan <i class="fas fa-external-link-alt" style="margin-left:auto; color:var(--text-light); font-size:12px;"></i>
+            </a>
+            <a href="https://docs.google.com/presentation/d/1CjLkemKljY6xKst699ObPyakJdejj3GYB7pf51D7KGU/edit?slide=id.g399b4a40343_0_55#slide=id.g399b4a40343_0_55" target="_blank" class="btn btn-link">
+              <i class="fas fa-book" style="color:var(--primary); width:20px;"></i> Buku Panduan <i class="fas fa-external-link-alt" style="margin-left:auto; color:var(--text-light); font-size:12px;"></i>
+            </a>
+            <a href="https://www.instagram.com/losciken/" target="_blank" class="btn btn-link" style="margin-bottom:0;">
+              <i class="fas fa-globe" style="color:var(--primary); width:20px;"></i> Website Los Ciken <i class="fas fa-external-link-alt" style="margin-left:auto; color:var(--text-light); font-size:12px;"></i>
+            </a>
+          </div>
+
+          <!-- 5. QR & Virtual ID Card -->
+          <div id="sec-idcard" class="section-card" style="background: var(--bg-light); border: 2px dashed var(--border); box-shadow: none;">
+            <div class="section-header" style="border:none; justify-content:center; margin-bottom: 0;"><i class="fas fa-id-card"></i> QR & Virtual ID Card</div>
+            <p style="text-align: center; color: var(--text-gray); font-size: 14px; margin-bottom: 30px;">Pratinjau kartu identitas virtual Anda. Anda dapat mengunduh QR Code atau gambar ID Card lengkap untuk disimpan.</p>
             
-            <div class="action-box">
-              <div class="url-input-group">
+            <!-- Beautiful Portrait ID Card Preview -->
+            <div id="virtual-id-preview" class="id-card-wrapper">
+              <div class="id-card-header">
+                <div style="font-weight: 800; font-style: italic; font-size: 26px; margin-bottom: 2px;">Los Ciken</div>
+                <div style="font-size: 11px; opacity: 0.9; letter-spacing: 1px;">KARTU IDENTITAS DIGITAL</div>
+              </div>
+              <div style="height: 8px; background: repeating-linear-gradient(45deg, #0a4f2b, #0a4f2b 10px, #10663a 10px, #10663a 20px);"></div>
+              <div class="id-card-body">
+                <img src="${data.foto}" crossorigin="anonymous" style="width: 130px; height: 130px; border-radius: 50%; object-fit: cover; border: 4px solid var(--primary-light); margin-bottom: 20px;" onerror="this.src='https://ui-avatars.com/api/?name=${encodeURIComponent(data.namaLengkap)}&background=0a4f2b&color=fff&size=150'">
+                <h2 style="font-size: 20px; color: var(--text-dark); margin-bottom: 6px; line-height: 1.2;">${data.namaLengkap}</h2>
+                <div style="font-size: 14px; font-weight: 600; color: var(--success); margin-bottom: 16px;">${data.jabatan}</div>
+                
+                <div style="display: inline-block; background: var(--bg-light); padding: 8px 16px; border-radius: 8px; font-family: monospace; font-weight: bold; font-size: 15px; color: var(--text-gray); margin-bottom: 24px; letter-spacing: 1px; border: 1px solid var(--border);">
+                  ${data.id}
+                </div>
+                
+                <div style="margin-bottom: 10px;">
+                  <div id="qrcode"></div>
+                </div>
+              </div>
+              <div class="id-card-footer">
+                Diperbarui pada ${data.tanggalBergabung}<br>
+                <span style="opacity: 0.8; font-weight: normal;">Hanya untuk keperluan internal Los Ciken.</span>
+              </div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div style="margin-top: 30px; display: flex; flex-direction: column; gap: 12px; align-items: center;">
+              <div class="url-input-group" style="width: 100%; max-width: 320px; margin-top:0;">
                 <input type="text" class="url-input" value="${currentUrl}" readonly onclick="this.select()">
-                <button class="btn btn-primary" onclick="copyLink()"><i class="fas fa-copy"></i> Salin Link</button>
+                <button class="btn btn-outline" onclick="copyLink()"><i class="fas fa-copy"></i></button>
               </div>
-              
-              <div style="margin-top: 24px;">
-                <p style="font-size:13px; color:var(--text-gray); font-weight:600; margin-bottom:10px;">Atau Tunjukkan QR Code</p>
-                <div id="qrcode"></div>
+              <div style="display: flex; gap: 10px; width: 100%; max-width: 320px;">
+                <button class="btn btn-outline" style="flex:1;" onclick="downloadQR()">
+                  <i class="fas fa-qrcode"></i> Unduh QR
+                </button>
+                <button id="btn-download" class="btn btn-green" style="flex:1;" onclick="downloadVirtualID('${data.id}')">
+                  <i class="fas fa-image"></i> Unduh ID Card
+                </button>
               </div>
             </div>
-          </div>
 
-          <!-- 4. Virtual ID Card -->
-          <div id="sec-idcard" class="section-card">
-            <div class="section-header"><i class="fas fa-id-card"></i> Virtual ID Card</div>
-            <p style="color:var(--text-gray); font-size:14px; margin-bottom:20px;">Unduh profil di atas dalam bentuk gambar sebagai ID Card Virtual. Cocok untuk disimpan di galeri atau dibagikan ke sosmed.</p>
-            
-            <div class="action-box" style="padding: 30px 20px;">
-              <i class="fas fa-image fa-3x" style="color: var(--primary); margin-bottom: 16px;"></i>
-              <h3 style="margin-bottom: 16px; font-size: 16px;">Simpan Kartu Identitas</h3>
-              <button id="btn-download" class="btn btn-green" onclick="downloadVirtualID('${data.id}')">
-                <i class="fas fa-download"></i> Unduh Gambar ID Card
-              </button>
-            </div>
           </div>
 
         </div>
       `;
 
-      // Generate QR Code dynamically
+      // Generate QR Code dynamically inside the Virtual ID Card
       loadScript('https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js')
         .then(() => {
           new QRCode(document.getElementById("qrcode"), {
             text: currentUrl,
-            width: 150,
-            height: 150,
+            width: 120,
+            height: 120,
             colorDark : "#0a4f2b",
             colorLight : "#ffffff",
-            correctLevel : QRCode.CorrectLevel.H
+            correctLevel : QRCode.CorrectLevel.M
           });
         })
         .catch(err => {
           document.getElementById("qrcode").innerHTML = "<p style='color:red;font-size:12px;'>Gagal memuat QR Code</p>";
         });
 
-      // Setup scroll spy for tabs
       setupScrollSpy();
     }
 
@@ -629,7 +662,12 @@
                  cabang: (row[15] && row[15].v) || '-',
                  tanggalBergabung: String(tgl),
                  status: (row[18] && row[18].v) || '-',
-                 divisi: (row[14] && row[14].v) || '-'
+                 divisi: (row[14] && row[14].v) || '-',
+                 kontakDarurat: {
+                   nama: (row[30] && row[30].v) || '-',
+                   hubungan: (row[31] && row[31].v) || '-',
+                   telepon: (row[32] && row[32].v) || '-'
+                 }
                };
                break;
              }
