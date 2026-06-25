@@ -7,6 +7,7 @@
   
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
   
   <style>
     :root {
@@ -20,19 +21,17 @@
       --border: #e5e7eb;
       --success: #10b981;
     }
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
     body {
       font-family: 'Inter', sans-serif;
       background-color: var(--bg-light);
       color: var(--text-dark);
       -webkit-font-smoothing: antialiased;
+      padding-bottom: 80px; /* space for fab */
     }
 
-    /* Header & Pattern */
+    /* Header */
     .app-header {
       background-color: var(--primary);
       color: var(--white);
@@ -40,311 +39,185 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
     }
-    .app-header-logo {
-      font-weight: 700;
-      font-size: 20px;
-      font-style: italic;
-    }
-    .app-header-title {
-      font-size: 14px;
-      font-weight: 500;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-    }
+    .app-header-logo { font-weight: 800; font-size: 20px; font-style: italic; letter-spacing: -0.5px; }
+    .app-header-title { font-size: 13px; font-weight: 600; display: flex; align-items: center; gap: 6px; background: rgba(255,255,255,0.2); padding: 6px 12px; border-radius: 20px; }
+    
     .pattern-bar {
-      height: 30px;
-      background: repeating-linear-gradient(45deg, #0a4f2b, #0a4f2b 10px, #10663a 10px, #10663a 20px);
-      position: relative;
-    }
-    .pattern-bar-logo {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      background: var(--primary);
-      color: var(--white);
-      width: 50px;
-      height: 50px;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-weight: bold;
-      font-style: italic;
-      border: 3px solid var(--white);
-      font-size: 12px;
-      text-align: center;
-      line-height: 1;
+      height: 24px;
+      background: repeating-linear-gradient(45deg, #0a4f2b, #0a4f2b 10px, #0e5e34 10px, #0e5e34 20px);
     }
 
-    .container {
-      max-width: 800px;
-      margin: 0 auto;
-      padding: 30px 20px;
-    }
+    .container { max-width: 600px; margin: 0 auto; padding: 24px 20px; }
 
-    /* Main Profile Card */
+    /* Profile Hero */
     .profile-hero {
       background: var(--white);
-      border-radius: 16px;
-      padding: 30px;
+      border-radius: 20px;
+      padding: 32px 24px;
       display: flex;
+      flex-direction: column;
       align-items: center;
-      gap: 30px;
-      box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
+      text-align: center;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.04);
       margin-bottom: 24px;
+      position: relative;
+      overflow: hidden;
+    }
+    .profile-hero::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 100px;
+      background: linear-gradient(135deg, var(--primary), #1a7442);
+      z-index: 1;
     }
     .hero-avatar {
-      width: 140px;
-      height: 140px;
+      width: 130px; height: 130px;
       border-radius: 50%;
       object-fit: cover;
-      background-color: var(--primary-light);
-      border: 4px solid var(--primary-light);
-    }
-    .hero-info {
-      flex: 1;
-    }
-    .hero-name {
-      font-size: 28px;
-      font-weight: 700;
-      color: var(--primary);
-      margin-bottom: 6px;
-    }
-    .hero-jabatan {
-      font-size: 16px;
-      font-weight: 600;
-      color: var(--success);
-      margin-bottom: 4px;
-    }
-    .hero-id {
-      font-size: 14px;
-      color: var(--text-gray);
+      background-color: var(--white);
+      border: 5px solid var(--white);
+      position: relative;
+      z-index: 2;
+      box-shadow: 0 8px 16px rgba(0,0,0,0.1);
       margin-bottom: 16px;
     }
+    .hero-name { font-size: 26px; font-weight: 800; color: var(--text-dark); margin-bottom: 6px; z-index: 2; position: relative; }
+    .hero-jabatan { font-size: 15px; font-weight: 600; color: var(--primary); margin-bottom: 16px; z-index: 2; position: relative; }
+    .hero-id { font-size: 13px; color: var(--text-gray); margin-bottom: 20px; font-weight: 500; z-index: 2; position: relative; background: var(--bg-light); padding: 4px 12px; border-radius: 12px; }
+    
     .hero-badges {
-      display: flex;
-      gap: 10px;
-      flex-wrap: wrap;
+      display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; z-index: 2; position: relative;
     }
     .badge {
-      background: var(--primary-light);
-      color: var(--primary);
-      padding: 6px 14px;
-      border-radius: 20px;
-      font-size: 13px;
-      font-weight: 600;
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
+      background: var(--primary-light); color: var(--primary);
+      padding: 8px 14px; border-radius: 20px;
+      font-size: 12px; font-weight: 700;
+      display: inline-flex; align-items: center; gap: 6px;
     }
 
-    /* Navigation Tabs */
-    .nav-tabs {
+    /* Action Tabs */
+    .action-tabs {
       display: flex;
-      background: var(--white);
-      border-radius: 12px;
-      padding: 8px;
-      gap: 8px;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+      gap: 12px;
       margin-bottom: 24px;
       overflow-x: auto;
-      white-space: nowrap;
+      padding-bottom: 8px;
+      scrollbar-width: none; /* Firefox */
     }
-    .nav-tab {
-      padding: 12px 20px;
-      font-size: 14px;
-      font-weight: 600;
-      color: var(--text-gray);
-      border-radius: 8px;
+    .action-tabs::-webkit-scrollbar { display: none; /* Chrome */ }
+    
+    .action-tab {
+      flex: 1;
+      min-width: 100px;
+      background: var(--white);
+      padding: 16px 12px;
+      border-radius: 16px;
+      text-align: center;
       cursor: pointer;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      transition: all 0.2s;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.03);
+      transition: transform 0.2s, box-shadow 0.2s;
+      display: flex; flex-direction: column; align-items: center; gap: 10px;
+      text-decoration: none;
     }
-    .nav-tab:hover {
-      background: var(--bg-light);
+    .action-tab:active { transform: translateY(2px); }
+    .action-icon {
+      width: 44px; height: 44px;
+      border-radius: 12px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 18px;
     }
-    .nav-tab.active {
-      color: var(--primary);
-      border-bottom: 3px solid var(--primary);
-      border-radius: 8px 8px 0 0;
-      background: transparent;
-    }
+    .action-tab span { font-size: 12px; font-weight: 600; color: var(--text-dark); }
 
-    /* Section Cards */
+    /* Sections */
     .section-card {
       background: var(--white);
-      border-radius: 16px;
+      border-radius: 20px;
       padding: 24px;
-      box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
+      box-shadow: 0 4px 10px rgba(0,0,0,0.03);
       margin-bottom: 24px;
     }
     .section-header {
-      font-size: 18px;
-      font-weight: 700;
-      color: var(--text-dark);
-      margin-bottom: 20px;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      padding-bottom: 16px;
-      border-bottom: 1px solid var(--border);
+      font-size: 17px; font-weight: 700; color: var(--text-dark);
+      margin-bottom: 20px; display: flex; align-items: center; gap: 10px;
+      padding-bottom: 16px; border-bottom: 1px solid var(--border);
     }
-    .section-header i {
-      color: var(--primary);
-    }
+    .section-header i { color: var(--primary); font-size: 20px; }
 
     /* Info Grid */
-    .info-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 20px 40px;
-    }
-    .info-item {
-      display: flex;
-      flex-direction: column;
-      gap: 4px;
-    }
-    .info-label {
-      font-size: 13px;
-      color: var(--text-gray);
-      font-weight: 500;
-    }
-    .info-value {
-      font-size: 15px;
-      color: var(--text-dark);
-      font-weight: 600;
-    }
+    .info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+    .info-item { display: flex; flex-direction: column; gap: 6px; }
+    .info-label { font-size: 12px; color: var(--text-gray); font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
+    .info-value { font-size: 14px; color: var(--text-dark); font-weight: 600; word-break: break-word; }
 
-    /* Contact List */
-    .contact-item {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 16px 0;
-      border-bottom: 1px solid var(--border);
-    }
-    .contact-item:last-child { border-bottom: none; padding-bottom: 0; }
-    .contact-left {
-      display: flex;
-      align-items: center;
-      gap: 16px;
-    }
-    .contact-avatar {
-      width: 48px;
-      height: 48px;
-      border-radius: 50%;
-      background: var(--primary-light);
-      color: var(--primary);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 20px;
-    }
-    .contact-name { font-weight: 700; color: var(--text-dark); margin-bottom: 4px; }
-    .contact-phone { font-size: 14px; color: var(--text-gray); }
-    .contact-actions { display: flex; gap: 8px; }
+    /* Contact Block */
+    .contact-block { display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+    .contact-info { display: flex; align-items: center; gap: 16px; }
+    .contact-avatar { width: 48px; height: 48px; border-radius: 50%; background: var(--primary-light); color: var(--primary); display: flex; align-items: center; justify-content: center; font-size: 20px; }
+    .contact-name { font-weight: 700; color: var(--text-dark); font-size: 15px; margin-bottom: 4px; }
+    .contact-phone { font-size: 14px; color: var(--text-gray); font-weight: 500; }
+    .contact-actions { display: flex; gap: 8px; flex-direction: column; }
     
     .btn {
-      padding: 10px 16px;
-      border-radius: 8px;
-      font-size: 14px;
-      font-weight: 600;
-      text-decoration: none;
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      cursor: pointer;
-      border: 1px solid transparent;
-      transition: opacity 0.2s;
+      padding: 12px 20px; border-radius: 12px; font-size: 14px; font-weight: 600; text-decoration: none;
+      display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+      cursor: pointer; border: none; transition: opacity 0.2s;
     }
     .btn:active { opacity: 0.8; }
-    .btn-outline { background: var(--white); color: var(--text-dark); border-color: var(--border); }
-    .btn-whatsapp { background: #075e54; color: var(--white); }
-    .btn-link { background: var(--white); color: var(--text-dark); border-color: var(--border); width: 100%; justify-content: flex-start; padding: 16px; }
+    .btn-outline { background: var(--white); color: var(--text-dark); border: 1px solid var(--border); }
+    .btn-whatsapp { background: #25D366; color: var(--white); }
+    .btn-primary { background: var(--primary); color: var(--white); }
+    .btn-link { background: #f8fafc; color: var(--text-dark); border: 1px solid var(--border); width: 100%; justify-content: flex-start; padding: 16px; margin-bottom: 12px; font-size: 14px; }
+    .btn-link:last-child { margin-bottom: 0; }
 
-    /* Links Grid */
-    .links-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 16px;
-    }
-    
     /* Org Chart */
-    .org-chart {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      padding: 20px 0;
-    }
+    .org-chart { display: flex; flex-direction: column; align-items: center; padding: 10px 0; }
     .org-node {
-      background: var(--white);
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      padding: 12px 20px;
-      text-align: center;
-      min-width: 200px;
-      position: relative;
+      background: var(--white); border: 2px solid var(--border); border-radius: 12px;
+      padding: 14px 20px; text-align: center; min-width: 240px; position: relative;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.02);
     }
-    .org-node.active {
-      background: var(--primary-light);
-      border-color: var(--primary);
-    }
-    .org-title { font-size: 12px; color: var(--text-gray); font-weight: 600; margin-bottom: 4px; }
+    .org-node.active { background: var(--primary-light); border-color: var(--primary); }
+    .org-title { font-size: 12px; color: var(--text-gray); font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 6px; }
     .org-node.active .org-title { color: var(--primary); }
-    .org-name { font-size: 14px; font-weight: 700; color: var(--text-dark); }
-    .org-line {
-      width: 2px;
-      height: 30px;
-      background: var(--border);
-    }
+    .org-name { font-size: 15px; font-weight: 700; color: var(--text-dark); }
+    .org-line { width: 2px; height: 24px; background: var(--border); }
 
-    /* Utilities */
-    .loading-screen {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      height: 60vh;
-      color: var(--text-gray);
+    /* Floating Action Button (Scroll to top) */
+    .fab-scroll {
+      position: fixed; bottom: 24px; right: 24px;
+      width: 50px; height: 50px; border-radius: 50%;
+      background: var(--primary); color: var(--white);
+      display: flex; align-items: center; justify-content: center;
+      box-shadow: 0 4px 12px rgba(10, 79, 43, 0.3);
+      cursor: pointer; font-size: 20px; z-index: 100;
+      opacity: 0; pointer-events: none; transition: opacity 0.3s;
     }
-    
-    .footer-dark {
-      background: var(--primary);
-      color: var(--white);
-      text-align: center;
-      padding: 24px;
-      font-size: 13px;
-      margin-top: 40px;
-    }
-    
-    @media (max-width: 640px) {
-      .profile-hero { flex-direction: column; text-align: center; gap: 20px; }
-      .hero-badges { justify-content: center; }
-      .info-grid { grid-template-columns: 1fr; }
-      .contact-item { flex-direction: column; align-items: flex-start; gap: 16px; }
-      .contact-actions { width: 100%; }
-      .contact-actions .btn { flex: 1; justify-content: center; }
-      .links-grid { grid-template-columns: 1fr; }
-      .nav-tabs { flex-wrap: nowrap; overflow-x: auto; padding-bottom: 4px; }
-      .nav-tab { white-space: nowrap; }
+    .fab-scroll.visible { opacity: 1; pointer-events: auto; }
+
+    .loading-screen { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 60vh; color: var(--text-gray); }
+
+    @media (max-width: 480px) {
+      .info-grid { grid-template-columns: 1fr; gap: 16px; }
+      .contact-block { flex-direction: column; align-items: stretch; text-align: center; }
+      .contact-info { flex-direction: column; margin-bottom: 16px; }
+      .contact-actions { flex-direction: row; }
+      .contact-actions .btn { flex: 1; }
     }
   </style>
 </head>
 <body>
 
-  <!-- Header -->
   <header class="app-header">
     <div class="app-header-logo">Los Ciken</div>
-    <div class="app-header-title">Profil Karyawan <i class="fas fa-check-circle"></i></div>
+    <div class="app-header-title">Profil Karyawan <i class="fas fa-check-circle" style="color: #4ade80;"></i></div>
   </header>
-  <div class="pattern-bar">
-    <div class="pattern-bar-logo">Los<br>Ciken</div>
-  </div>
+  <div class="pattern-bar"></div>
 
   <div id="app">
     <div class="loading-screen" id="loading">
@@ -353,11 +226,9 @@
     </div>
   </div>
 
-  <!-- Footer -->
-  <footer class="footer-dark">
-    <div style="margin-bottom: 8px;"><i class="fas fa-shield-check"></i> Data bersifat rahasia. Hanya untuk keperluan internal Los Ciken.</div>
-    <div>&copy; 2024 Los Ciken. All rights reserved.</div>
-  </footer>
+  <div class="fab-scroll" id="fab" onclick="window.scrollTo(0,0)">
+    <i class="fas fa-arrow-up"></i>
+  </div>
 
   <script>
     const sheetId = '1kjiHj3J5pX_V0ZbMiyl6dnAQ99oHxPDQ2G0q69bJUlg';
@@ -366,24 +237,27 @@
     const employeeId = urlParams.get('id');
 
     window.onload = () => {
-      if (!employeeId) {
-        showSearchForm();
-      } else {
-        fetchData(employeeId);
-      }
+      if (!employeeId) showSearchForm();
+      else fetchData(employeeId);
+
+      // Scroll listener for FAB
+      window.addEventListener('scroll', () => {
+        const fab = document.getElementById('fab');
+        if (window.scrollY > 300) fab.classList.add('visible');
+        else fab.classList.remove('visible');
+      });
     };
 
     function showSearchForm() {
       document.getElementById('app').innerHTML = `
         <div class="container">
-          <div class="profile-hero" style="flex-direction: column; text-align: center; padding: 40px 20px;">
+          <div class="section-card" style="text-align: center; padding: 50px 20px; margin-top: 20px;">
             <i class="fas fa-id-badge fa-4x" style="color: var(--primary); margin-bottom: 20px;"></i>
             <h2 style="margin: 0 0 10px; color: var(--text-dark);">Pemindai Lanyard</h2>
-            <p style="color: var(--text-gray); font-size: 14px; margin-bottom: 24px;">Silakan masukkan ID Karyawan untuk melihat profil.</p>
-            <form onsubmit="searchId(event)" style="width: 100%; max-width: 300px;">
-              <input type="text" id="manual-id" placeholder="Contoh: LS-001" style="padding: 14px; width: 100%; border: 2px solid var(--border); border-radius: 10px; margin-bottom: 16px; font-size: 16px; text-align: center; outline: none;">
-              <br>
-              <button type="submit" class="btn btn-green" style="width: 100%; padding: 14px; border:none; color:white; background:var(--primary);">Lihat Profil</button>
+            <p style="color: var(--text-gray); font-size: 14px; margin-bottom: 30px;">Silakan masukkan ID Karyawan untuk melihat profil.</p>
+            <form onsubmit="searchId(event)" style="max-width: 300px; margin: 0 auto;">
+              <input type="text" id="manual-id" placeholder="Contoh: LS-001" style="padding: 16px; width: 100%; border: 2px solid var(--border); border-radius: 12px; margin-bottom: 16px; font-size: 16px; text-align: center; outline: none;">
+              <button type="submit" class="btn btn-primary" style="width: 100%;">Lihat Profil</button>
             </form>
           </div>
         </div>
@@ -399,178 +273,236 @@
     function showError(message) {
       document.getElementById('app').innerHTML = `
         <div class="container">
-          <div class="profile-hero" style="flex-direction: column; text-align: center; padding: 40px 20px;">
+          <div class="section-card" style="text-align: center; padding: 50px 20px; margin-top: 20px;">
             <i class="fas fa-exclamation-circle fa-4x" style="color: #ef4444; margin-bottom: 20px;"></i>
             <h2 style="margin: 0 0 10px; color: var(--text-dark);">Ups, terjadi kesalahan</h2>
-            <p style="color: var(--text-gray); font-size: 14px; margin-bottom: 24px;">${message}</p>
-            <button onclick="window.location.href=window.location.pathname" class="btn" style="background:var(--bg-light); border:1px solid var(--border);">Kembali</button>
+            <p style="color: var(--text-gray); font-size: 14px; margin-bottom: 30px;">${message}</p>
+            <button onclick="window.location.href=window.location.pathname" class="btn btn-outline">Kembali</button>
           </div>
         </div>
       `;
     }
 
-    // Scroll to section function
     function scrollToSection(id) {
-      document.querySelectorAll('.nav-tab').forEach(el => el.classList.remove('active'));
-      event.currentTarget.classList.add('active');
       const element = document.getElementById(id);
       if (element) {
-        element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        // Offset for sticky header
+        const y = element.getBoundingClientRect().top + window.scrollY - 80;
+        window.scrollTo({ top: y, behavior: 'smooth' });
       }
     }
 
-    function buildOrgChart(divisi, jabatan, nama) {
-      // Struktur generik berdasarkan request
-      let parent1 = "Direktur";
-      let parent2 = "Wakil Direktur";
-      
-      let divHead = "";
-      if(divisi.toLowerCase().includes("operasional")) divHead = "Kepala Divisi Operasional";
-      else if(divisi.toLowerCase().includes("human resource")) divHead = "Kepala Human Resource";
-      else if(divisi.toLowerCase().includes("finance")) divHead = "Kepala Divisi Finance";
-      else divHead = "Kepala Divisi " + divisi;
+    function copyProfileLink() {
+      navigator.clipboard.writeText(window.location.href).then(() => {
+        alert("Link profil berhasil disalin! Silakan bagikan.");
+      }).catch(err => {
+        alert("Gagal menyalin link: " + err);
+      });
+    }
 
-      return `
-        <div class="org-chart">
-          <div class="org-node">
-            <div class="org-title">Direktur</div>
+    function downloadIDCard() {
+      const hero = document.getElementById('profile-hero');
+      const btnText = document.getElementById('btn-id-text');
+      const btnIcon = document.getElementById('btn-id-icon');
+      
+      // visual feedback
+      btnText.innerText = "Mengunduh...";
+      btnIcon.className = "fas fa-spinner fa-spin";
+      
+      html2canvas(hero, { scale: 2, useCORS: true, backgroundColor: "#ffffff" }).then(canvas => {
+        const link = document.createElement('a');
+        link.download = \`ID_Card_\${employeeId}.png\`;
+        link.href = canvas.toDataURL('image/png');
+        link.click();
+        
+        // revert
+        btnText.innerText = "ID Virtual";
+        btnIcon.className = "fas fa-id-card";
+      }).catch(err => {
+        alert("Gagal mengunduh ID Card.");
+        btnText.innerText = "ID Virtual";
+        btnIcon.className = "fas fa-id-card";
+      });
+    }
+
+    function buildOrgChart(divisi, jabatan, nama) {
+      let nodes = [];
+      nodes.push({ title: 'Direktur', name: (jabatan === 'Direktur' ? nama : '') });
+      
+      if (jabatan !== 'Direktur') {
+        nodes.push({ title: 'Wakil Direktur', name: (jabatan === 'Wakil Direktur' ? nama : '') });
+        
+        if (jabatan !== 'Wakil Direktur') {
+          let divHead = '';
+          const divLowercased = divisi.toLowerCase();
+          
+          if (divLowercased.includes('operasional')) divHead = 'Kepala Divisi Operasional';
+          else if (divLowercased.includes('human resource') || divLowercased.includes('hr')) divHead = 'Kepala Human Resource';
+          else if (divLowercased.includes('finance')) divHead = 'Kepala Divisi Finance';
+          else divHead = 'Kepala Divisi ' + divisi;
+          
+          if (jabatan === divHead) {
+            nodes.push({ title: divHead, name: nama });
+          } else {
+            nodes.push({ title: divHead, name: '' });
+            nodes.push({ title: jabatan, name: nama });
+          }
+        }
+      }
+
+      let html = '<div class="org-chart">';
+      for (let i = 0; i < nodes.length; i++) {
+        const isLast = (i === nodes.length - 1);
+        const activeClass = isLast ? 'active' : '';
+        const nameHtml = nodes[i].name ? \`<div class="org-name">\${nodes[i].name}</div>\` : '';
+        
+        html += \`
+          <div class="org-node \${activeClass}">
+            <div class="org-title">\${nodes[i].title}</div>
+            \${nameHtml}
           </div>
-          <div class="org-line"></div>
-          <div class="org-node">
-            <div class="org-title">${divHead}</div>
-          </div>
-          <div class="org-line"></div>
-          <div class="org-node active">
-            <div class="org-title">${jabatan}</div>
-            <div class="org-name">${nama}</div>
-          </div>
-        </div>
-      `;
+        \`;
+        if (!isLast) html += \`<div class="org-line"></div>\`;
+      }
+      html += '</div>';
+      return html;
     }
 
     function renderData(data) {
-      const waNumber = data.kontakDarurat.telepon.replace(/\D/g, '');
-      const kontakHtml = (data.kontakDarurat.nama && data.kontakDarurat.nama !== '-') ? `
-        <div class="contact-item">
-          <div class="contact-left">
-            <div class="contact-avatar"><i class="fas fa-user"></i></div>
-            <div>
-              <div class="contact-name">${data.kontakDarurat.nama} (${data.kontakDarurat.hubungan})</div>
-              <div class="contact-phone">${data.kontakDarurat.telepon}</div>
-            </div>
-          </div>
-          <div class="contact-actions">
-            <a href="tel:${data.kontakDarurat.telepon}" class="btn btn-outline"><i class="fas fa-phone-alt"></i> Call</a>
-            <a href="https://wa.me/${waNumber}" target="_blank" class="btn btn-whatsapp"><i class="fab fa-whatsapp"></i> WhatsApp</a>
-          </div>
-        </div>
-      ` : `
-        <div style="text-align: center; padding: 20px; color: var(--text-gray);">
-          Tidak ada data kontak darurat.
-        </div>
-      `;
+      const waNumber = data.telepon.replace(/\\D/g, ''); // Nomor telepon karyawan itu sendiri
 
-      document.getElementById('app').innerHTML = `
+      document.getElementById('app').innerHTML = \`
         <div class="container">
           
-          <!-- Hero Card -->
-          <div class="profile-hero">
-            <img src="${data.foto}" alt="Foto Profil" class="hero-avatar" onerror="this.src='https://ui-avatars.com/api/?name=${encodeURIComponent(data.namaLengkap)}&background=0a4f2b&color=fff&size=150'">
-            <div class="hero-info">
-              <h1 class="hero-name">${data.namaLengkap}</h1>
-              <div class="hero-jabatan">${data.jabatan}</div>
-              <div class="hero-id">ID Karyawan: ${data.id}</div>
-              <div class="hero-badges">
-                <span class="badge"><i class="fas fa-check-circle"></i> ${data.status}</span>
-                <span class="badge"><i class="fas fa-map-marker-alt"></i> ${data.cabang}</span>
-                <span class="badge"><i class="fas fa-briefcase"></i> ${data.divisi}</span>
-              </div>
+          <!-- Hero Card (This will be downloaded as ID) -->
+          <div class="profile-hero" id="profile-hero">
+            <img src="\${data.foto}" alt="Foto Profil" class="hero-avatar" crossorigin="anonymous" onerror="this.src='https://ui-avatars.com/api/?name=\${encodeURIComponent(data.namaLengkap)}&background=0a4f2b&color=fff&size=150'">
+            <h1 class="hero-name">\${data.namaLengkap}</h1>
+            <div class="hero-jabatan">\${data.jabatan}</div>
+            <div class="hero-id">ID: \${data.id}</div>
+            <div class="hero-badges">
+              <span class="badge"><i class="fas fa-check-circle"></i> \${data.status}</span>
+              <span class="badge"><i class="fas fa-map-marker-alt"></i> \${data.cabang}</span>
+              <span class="badge"><i class="fas fa-briefcase"></i> \${data.divisi}</span>
             </div>
           </div>
 
-          <!-- Sticky Nav Tabs -->
-          <div class="nav-tabs">
-            <div class="nav-tab active" onclick="scrollToSection('sec-info')"><i class="fas fa-user"></i> Info Karyawan</div>
-            <div class="nav-tab" onclick="scrollToSection('sec-kontak')"><i class="fas fa-phone-alt"></i> Kontak Darurat</div>
-            <div class="nav-tab" onclick="scrollToSection('sec-struktur')"><i class="fas fa-sitemap"></i> Struktur Perusahaan</div>
-            <div class="nav-tab" onclick="scrollToSection('sec-perusahaan')"><i class="fas fa-building"></i> Info Perusahaan</div>
+          <!-- Quick Action Tabs -->
+          <div class="action-tabs">
+            <div class="action-tab" onclick="scrollToSection('sec-info')">
+              <div class="action-icon" style="background:#f3f4f6; color:#4b5563;"><i class="fas fa-user"></i></div>
+              <span>Info</span>
+            </div>
+            <div class="action-tab" onclick="scrollToSection('sec-hubungi')">
+              <div class="action-icon" style="background:#e8f5e9; color:#0a4f2b;"><i class="fas fa-phone-alt"></i></div>
+              <span>Hubungi</span>
+            </div>
+            <div class="action-tab" onclick="copyProfileLink()">
+              <div class="action-icon" style="background:#eff6ff; color:#3b82f6;"><i class="fas fa-link"></i></div>
+              <span>Salin Link</span>
+            </div>
+            <div class="action-tab" onclick="downloadIDCard()">
+              <div class="action-icon" style="background:#fef3c7; color:#f59e0b;"><i id="btn-id-icon" class="fas fa-id-card"></i></div>
+              <span id="btn-id-text">ID Virtual</span>
+            </div>
           </div>
 
           <!-- Info Karyawan -->
           <div id="sec-info" class="section-card">
-            <div class="section-header"><i class="fas fa-user"></i> Info Karyawan</div>
+            <div class="section-header"><i class="fas fa-address-card"></i> Detail Karyawan</div>
             <div class="info-grid">
               <div class="info-item">
                 <span class="info-label">Nama Lengkap</span>
-                <span class="info-value">${data.namaLengkap}</span>
-              </div>
-              <div class="info-item">
-                <span class="info-label">Tanggal Bergabung</span>
-                <span class="info-value">${data.tanggalBergabung}</span>
-              </div>
-              <div class="info-item">
-                <span class="info-label">Divisi</span>
-                <span class="info-value">${data.divisi}</span>
-              </div>
-              <div class="info-item">
-                <span class="info-label">Email Kantor</span>
-                <span class="info-value">${data.email}</span>
-              </div>
-              <div class="info-item">
-                <span class="info-label">Jabatan</span>
-                <span class="info-value">${data.jabatan}</span>
+                <span class="info-value">\${data.namaLengkap}</span>
               </div>
               <div class="info-item">
                 <span class="info-label">ID Karyawan</span>
-                <span class="info-value">${data.id}</span>
+                <span class="info-value">\${data.id}</span>
+              </div>
+              <div class="info-item">
+                <span class="info-label">Divisi</span>
+                <span class="info-value">\${data.divisi}</span>
+              </div>
+              <div class="info-item">
+                <span class="info-label">Jabatan</span>
+                <span class="info-value">\${data.jabatan}</span>
               </div>
               <div class="info-item">
                 <span class="info-label">Cabang</span>
-                <span class="info-value">${data.cabang}</span>
+                <span class="info-value">\${data.cabang}</span>
               </div>
               <div class="info-item">
                 <span class="info-label">Status</span>
-                <span class="info-value">
-                  <span style="background:var(--primary-light); color:var(--primary); padding:4px 10px; border-radius:12px; font-size:12px; font-weight:bold;">${data.status}</span>
-                </span>
+                <span class="info-value">\${data.status}</span>
+              </div>
+              <div class="info-item">
+                <span class="info-label">Email Kantor</span>
+                <span class="info-value">\${data.email}</span>
+              </div>
+              <div class="info-item">
+                <span class="info-label">Tanggal Bergabung</span>
+                <span class="info-value">\${data.tanggalBergabung}</span>
               </div>
             </div>
           </div>
 
-          <!-- Kontak Darurat -->
-          <div id="sec-kontak" class="section-card">
-            <div class="section-header"><i class="fas fa-phone-alt"></i> Kontak Darurat</div>
-            ${kontakHtml}
+          <!-- Hubungi Karyawan (Replaces Kontak Darurat) -->
+          <div id="sec-hubungi" class="section-card">
+            <div class="section-header"><i class="fas fa-phone-alt"></i> Hubungi Karyawan</div>
+            <p style="color:var(--text-gray); font-size:14px; margin-bottom:16px;">Gunakan kontak di bawah ini untuk menghubungi karyawan secara langsung.</p>
+            <div class="contact-block">
+              <div class="contact-info">
+                <div class="contact-avatar"><i class="fas fa-user"></i></div>
+                <div>
+                  <div class="contact-name">\${data.namaLengkap}</div>
+                  <div class="contact-phone">\${data.telepon}</div>
+                </div>
+              </div>
+              <div class="contact-actions">
+                <a href="tel:\${data.telepon}" class="btn btn-outline"><i class="fas fa-phone-alt"></i> Telepon</a>
+                <a href="https://wa.me/\${waNumber}" target="_blank" class="btn btn-whatsapp"><i class="fab fa-whatsapp"></i> WhatsApp</a>
+              </div>
+            </div>
           </div>
 
           <!-- Struktur Perusahaan -->
           <div id="sec-struktur" class="section-card">
             <div class="section-header"><i class="fas fa-sitemap"></i> Struktur Perusahaan</div>
-            ${buildOrgChart(data.divisi, data.jabatan, data.namaLengkap)}
+            \${buildOrgChart(data.divisi, data.jabatan, data.namaLengkap)}
           </div>
 
           <!-- Info Perusahaan -->
           <div id="sec-perusahaan" class="section-card">
             <div class="section-header"><i class="fas fa-building"></i> Info Perusahaan</div>
             <p style="color:var(--text-gray); margin-bottom:20px; font-size:14px;">Akses informasi penting dan kebijakan perusahaan Los Ciken melalui link berikut.</p>
-            <div class="links-grid">
-              <a href="https://radipson.github.io/LOSHRISENTERPRISE/" target="_blank" class="btn btn-link">
-                <i class="fas fa-link" style="color:var(--primary)"></i> Portal Karyawan <i class="fas fa-external-link-alt" style="margin-left:auto; color:var(--text-light); font-size:12px;"></i>
-              </a>
-              <a href="https://docs.google.com/presentation/d/1OgLeF4CrlMTBOGWkkFsYCSpPiyH6u0eFVsOaznlgXg8/edit?slide=id.g3853d4b8791_0_0#slide=id.g3853d4b8791_0_0" target="_blank" class="btn btn-link">
-                <i class="fas fa-shield-alt" style="color:var(--primary)"></i> Kebijakan Perusahaan <i class="fas fa-external-link-alt" style="margin-left:auto; color:var(--text-light); font-size:12px;"></i>
-              </a>
-              <a href="https://docs.google.com/presentation/d/1CjLkemKljY6xKst699ObPyakJdejj3GYB7pf51D7KGU/edit?slide=id.g399b4a40343_0_55#slide=id.g399b4a40343_0_55" target="_blank" class="btn btn-link">
-                <i class="fas fa-book" style="color:var(--primary)"></i> Buku Panduan <i class="fas fa-external-link-alt" style="margin-left:auto; color:var(--text-light); font-size:12px;"></i>
-              </a>
-              <a href="https://www.instagram.com/losciken/" target="_blank" class="btn btn-link">
-                <i class="fas fa-globe" style="color:var(--primary)"></i> Website Los Ciken <i class="fas fa-external-link-alt" style="margin-left:auto; color:var(--text-light); font-size:12px;"></i>
-              </a>
-            </div>
+            
+            <a href="https://radipson.github.io/LOSHRISENTERPRISE/" target="_blank" class="btn btn-link">
+              <div style="width:30px; text-align:center;"><i class="fas fa-link" style="color:var(--primary); font-size:16px;"></i></div> 
+              Portal Karyawan 
+              <i class="fas fa-chevron-right" style="margin-left:auto; color:var(--text-light); font-size:12px;"></i>
+            </a>
+            
+            <a href="https://docs.google.com/presentation/d/1OgLeF4CrlMTBOGWkkFsYCSpPiyH6u0eFVsOaznlgXg8/edit?slide=id.g3853d4b8791_0_0#slide=id.g3853d4b8791_0_0" target="_blank" class="btn btn-link">
+              <div style="width:30px; text-align:center;"><i class="fas fa-shield-alt" style="color:var(--primary); font-size:16px;"></i></div> 
+              Kebijakan Perusahaan 
+              <i class="fas fa-chevron-right" style="margin-left:auto; color:var(--text-light); font-size:12px;"></i>
+            </a>
+            
+            <a href="https://docs.google.com/presentation/d/1CjLkemKljY6xKst699ObPyakJdejj3GYB7pf51D7KGU/edit?slide=id.g399b4a40343_0_55#slide=id.g399b4a40343_0_55" target="_blank" class="btn btn-link">
+              <div style="width:30px; text-align:center;"><i class="fas fa-book" style="color:var(--primary); font-size:16px;"></i></div> 
+              Buku Panduan 
+              <i class="fas fa-chevron-right" style="margin-left:auto; color:var(--text-light); font-size:12px;"></i>
+            </a>
+            
+            <a href="https://www.instagram.com/losciken/" target="_blank" class="btn btn-link">
+              <div style="width:30px; text-align:center;"><i class="fab fa-instagram" style="color:#e1306c; font-size:18px;"></i></div> 
+              Instagram Los Ciken 
+              <i class="fas fa-chevron-right" style="margin-left:auto; color:var(--text-light); font-size:12px;"></i>
+            </a>
           </div>
 
         </div>
-      `;
+      \`;
     }
 
     function fetchData(id) {
@@ -584,7 +516,7 @@
         .then(text => {
           const startIndex = text.indexOf('{');
           const endIndex = text.lastIndexOf('}');
-          if (startIndex === -1 || endIndex === -1) throw new Error("Sheet diprivate.");
+          if (startIndex === -1 || endIndex === -1) throw new Error("Gagal membaca data Google Sheet.");
           
           const jsonStr = text.substring(startIndex, endIndex + 1);
           const data = JSON.parse(jsonStr);
@@ -608,11 +540,6 @@
                  tanggalBergabung: String(tgl),
                  status: (row[18] && row[18].v) || '-',
                  divisi: (row[14] && row[14].v) || '-',
-                 kontakDarurat: {
-                   nama: (row[30] && row[30].v) || '-',
-                   hubungan: (row[31] && row[31].v) || '-',
-                   telepon: (row[32] && row[32].v) || '-'
-                 }
                };
                break;
              }
@@ -622,7 +549,6 @@
           else showError("Data ID " + id + " tidak ditemukan.");
         })
         .catch(err => {
-          console.error(err);
           showError(err.message);
         });
     }
