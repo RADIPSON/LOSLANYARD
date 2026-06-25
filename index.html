@@ -1,75 +1,494 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Profil Karyawan - Lanyard</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>Profil Karyawan - Lanyard</title>
+  
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
+  <style>
+    :root {
+      --primary: #0a4f2b; /* Dark Green */
+      --primary-light: #e8f5e9;
+      --text-dark: #1f2937;
+      --text-gray: #6b7280;
+      --bg-light: #f5f7f9;
+      --white: #ffffff;
+      --border: #e5e7eb;
+    }
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: var(--bg-light);
+      color: var(--text-dark);
+      margin: 0;
+      padding: 0;
+      -webkit-font-smoothing: antialiased;
+    }
+    .container {
+      max-width: 480px;
+      margin: 0 auto;
+      padding: 20px;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+    
+    /* Header Card */
+    .profile-card {
+      background: var(--white);
+      border-radius: 20px;
+      padding: 30px 20px;
+      text-align: center;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+      position: relative;
+      overflow: hidden;
+      margin-bottom: 24px;
+    }
+    .profile-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 100px;
+      background: linear-gradient(135deg, var(--primary), #1a7442);
+    }
+    .profile-avatar {
+      width: 120px;
+      height: 120px;
+      border-radius: 50%;
+      border: 4px solid var(--white);
+      background-color: var(--white);
+      object-fit: cover;
+      position: relative;
+      margin: 20px auto 16px;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    }
+    .profile-name {
+      font-size: 24px;
+      font-weight: 700;
+      margin: 0 0 4px;
+      color: var(--text-dark);
+    }
+    .profile-title {
+      font-size: 15px;
+      color: var(--primary);
+      font-weight: 600;
+      margin: 0 0 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .badge-container {
+      display: flex;
+      justify-content: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .badge {
+      padding: 6px 12px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .badge-id { background: #f3f4f6; color: #4b5563; }
+    .badge-status { background: var(--primary-light); color: var(--primary); }
 
-    <!-- PWA / Meta Tags -->
-    <meta name="theme-color" content="#0b0b0c">
-    <meta name="mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <link rel="icon" href="icon.png">
+    /* Tabs */
+    .tabs {
+      display: flex;
+      background: var(--white);
+      border-radius: 12px;
+      padding: 6px;
+      margin-bottom: 20px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.02);
+    }
+    .tab {
+      flex: 1;
+      text-align: center;
+      padding: 10px;
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text-gray);
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+    .tab.active {
+      background: var(--primary);
+      color: var(--white);
+      box-shadow: 0 4px 10px rgba(10, 79, 43, 0.2);
+    }
 
-    <style>
-        html, body {
-            margin: 0;
-            padding: 0;
-            width: 100vw;
-            height: 100vh;
-            height: 100dvh; /* dynamic viewport height, lebih akurat di browser mobile */
-            overflow: hidden; /* Mencegah scroll ganda */
-            background-color: #f5f7f9; /* Sesuaikan dengan warna background lanyard */
-        }
-        iframe {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
-            height: 100dvh;
-            border: none;
-            display: block;
-            background-color: transparent;
-            /* perhitungkan safe-area (notch, home indicator) */
-            padding-top: env(safe-area-inset-top);
-            padding-bottom: env(safe-area-inset-bottom);
-            box-sizing: border-box;
-        }
-        .loading {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            font-family: sans-serif;
-            color: #666;
-            z-index: -1;
-        }
-    </style>
+    /* Content Area */
+    .tab-content { display: none; animation: fadeIn 0.4s ease; }
+    .tab-content.active { display: block; }
+    
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .info-group {
+      background: var(--white);
+      border-radius: 16px;
+      padding: 20px;
+      margin-bottom: 16px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.02);
+    }
+    .info-row {
+      display: flex;
+      align-items: flex-start;
+      margin-bottom: 16px;
+      padding-bottom: 16px;
+      border-bottom: 1px solid var(--border);
+    }
+    .info-row:last-child {
+      margin-bottom: 0;
+      padding-bottom: 0;
+      border-bottom: none;
+    }
+    .info-icon {
+      width: 36px;
+      height: 36px;
+      border-radius: 10px;
+      background: var(--primary-light);
+      color: var(--primary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+      margin-right: 16px;
+      flex-shrink: 0;
+    }
+    .info-text .label {
+      font-size: 12px;
+      color: var(--text-gray);
+      margin-bottom: 4px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      font-weight: 600;
+    }
+    .info-text .value {
+      font-size: 15px;
+      color: var(--text-dark);
+      font-weight: 500;
+      word-break: break-word;
+    }
+
+    /* Contact Card */
+    .contact-card {
+      background: var(--white);
+      border-radius: 16px;
+      padding: 20px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.02);
+    }
+    .contact-info {
+      display: flex;
+      align-items: center;
+      margin-bottom: 16px;
+    }
+    .contact-avatar {
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      background: var(--bg-light);
+      color: var(--text-gray);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      margin-right: 16px;
+    }
+    .contact-details .name { font-weight: 700; font-size: 16px; color: var(--text-dark); margin-bottom: 4px; }
+    .contact-details .phone { font-size: 14px; color: var(--text-gray); }
+    .contact-actions { display: flex; gap: 10px; }
+    
+    .btn {
+      flex: 1;
+      padding: 12px;
+      border-radius: 10px;
+      border: none;
+      font-weight: 600;
+      font-size: 14px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      text-decoration: none;
+      transition: opacity 0.2s;
+    }
+    .btn:active { opacity: 0.8; }
+    .btn-green { background: #25D366; color: white; }
+    .btn-light { background: var(--bg-light); color: var(--text-dark); }
+    .btn-primary { background: var(--primary); color: white; }
+
+    /* Loading & Error */
+    .loading {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 60vh;
+      color: var(--text-gray);
+    }
+    
+    /* Footer */
+    .footer {
+      margin-top: auto;
+      padding: 24px 0 10px;
+      text-align: center;
+      font-size: 12px;
+      color: #9ca3af;
+    }
+  </style>
 </head>
 <body>
 
-    <div class="loading">Memuat...</div>
-    <iframe id="app-frame" allowfullscreen></iframe>
+  <div class="container" id="app">
+    <div class="loading" id="loading">
+      <i class="fas fa-spinner fa-spin fa-3x" style="margin-bottom: 16px; color: var(--primary)"></i>
+      <p style="font-weight: 500;">Menghubungkan ke server...</p>
+    </div>
+  </div>
 
-    <script>
-        // 1. Ambil URL Web App Apps Script Anda
-        const baseUrl = "https://script.google.com/macros/s/AKfycby2qYYpCk-FEoGH5m5Ux24ms5C8zWWy8MMxI9dVkhGWtkVwabVLKNmJ5TBbYP6q6VW9/exec";
+  <script>
+    // Konfigurasi
+    const sheetId = '1kjiHj3J5pX_V0ZbMiyl6dnAQ99oHxPDQ2G0q69bJUlg';
+    const sheetGid = '343518669'; // GID dari sheet DATABASE KARYAWAN
+    
+    // Ambil ID Karyawan dari URL (?id=LS-001)
+    const urlParams = new URLSearchParams(window.location.search);
+    const employeeId = urlParams.get('id');
 
-        // 2. Ambil parameter ?id= dari URL GitHub Pages
-        const urlParams = new URLSearchParams(window.location.search);
-        const idKaryawan = urlParams.get('id');
+    function init() {
+      if (!employeeId) {
+        showSearchForm();
+        return;
+      }
+      fetchData(employeeId);
+    }
 
-        // 3. Gabungkan URL Apps Script dengan Parameter ID
-        let finalUrl = baseUrl;
-        if (idKaryawan) {
-            finalUrl += "?id=" + encodeURIComponent(idKaryawan);
-        }
+    function showSearchForm() {
+      const app = document.getElementById('app');
+      app.innerHTML = `
+        <div class="profile-card" style="margin-top: 40px; padding: 40px 20px;">
+          <i class="fas fa-id-badge fa-4x" style="color: var(--primary); margin-bottom: 20px;"></i>
+          <h2 style="margin: 0 0 10px; color: var(--text-dark);">Pemindai Lanyard</h2>
+          <p style="color: var(--text-gray); font-size: 14px; margin-bottom: 24px;">Silakan masukkan ID Karyawan untuk melihat profil.</p>
+          <form onsubmit="searchId(event)">
+            <input type="text" id="manual-id" placeholder="Contoh: LS-001" style="padding: 14px; width: 100%; max-width: 250px; border: 2px solid var(--border); border-radius: 10px; margin-bottom: 16px; font-size: 16px; text-align: center; outline: none;">
+            <br>
+            <button type="submit" class="btn btn-primary" style="max-width: 280px; margin: 0 auto; padding: 14px;">Lihat Profil</button>
+          </form>
+        </div>
+      `;
+    }
 
-        // 4. Masukkan ke iframe
-        document.getElementById('app-frame').src = finalUrl;
-    </script>
+    function searchId(event) {
+      event.preventDefault();
+      const id = document.getElementById('manual-id').value.trim();
+      if (id) {
+        window.location.href = window.location.pathname + '?id=' + id;
+      }
+    }
 
+    function showError(message) {
+      const app = document.getElementById('app');
+      app.innerHTML = `
+        <div class="profile-card" style="margin-top: 40px; padding: 40px 20px;">
+          <i class="fas fa-exclamation-circle fa-4x" style="color: #ef4444; margin-bottom: 20px;"></i>
+          <h2 style="margin: 0 0 10px; color: var(--text-dark);">Ups, terjadi kesalahan</h2>
+          <p style="color: var(--text-gray); font-size: 14px; margin-bottom: 24px;">${message}</p>
+          <button onclick="window.location.href=window.location.pathname" class="btn btn-light" style="max-width: 200px; margin: 0 auto;">Kembali</button>
+        </div>
+      `;
+    }
+
+    function renderData(data) {
+      const waNumber = data.kontakDarurat.telepon.replace(/\D/g, '');
+      const kontakHtml = (data.kontakDarurat.nama && data.kontakDarurat.nama !== '-') ? `
+        <div class="contact-card">
+          <div class="contact-info">
+            <div class="contact-avatar"><i class="fas fa-user"></i></div>
+            <div class="contact-details">
+              <div class="name">${data.kontakDarurat.nama} (${data.kontakDarurat.hubungan})</div>
+              <div class="phone">${data.kontakDarurat.telepon}</div>
+            </div>
+          </div>
+          <div class="contact-actions">
+            <a href="tel:${data.kontakDarurat.telepon}" class="btn btn-light"><i class="fas fa-phone-alt"></i> Call</a>
+            <a href="https://wa.me/${waNumber}" target="_blank" class="btn btn-green"><i class="fab fa-whatsapp"></i> WhatsApp</a>
+          </div>
+        </div>
+      ` : `
+        <div class="contact-card" style="text-align: center; padding: 30px;">
+          <i class="fas fa-info-circle fa-2x" style="color: #ccc; margin-bottom: 10px;"></i>
+          <p style="margin: 0; color: #6b7280; font-size: 14px;">Tidak ada data kontak darurat.</p>
+        </div>
+      `;
+
+      document.getElementById('app').innerHTML = `
+        <div class="profile-card">
+          <img src="${data.foto}" alt="Foto Profil" class="profile-avatar" onerror="this.src='https://ui-avatars.com/api/?name=${encodeURIComponent(data.namaLengkap)}&background=0a4f2b&color=fff&size=150'">
+          <h1 class="profile-name">${data.namaLengkap}</h1>
+          <p class="profile-title">${data.jabatan}</p>
+          <div class="badge-container">
+            <span class="badge badge-id"><i class="fas fa-id-card"></i> ${data.id}</span>
+            <span class="badge badge-status"><i class="fas fa-check-circle"></i> ${data.status}</span>
+          </div>
+        </div>
+
+        <div class="tabs">
+          <div class="tab active" onclick="switchTab('info', this)">Info Pribadi</div>
+          <div class="tab" onclick="switchTab('struktur', this)">Penempatan</div>
+          <div class="tab" onclick="switchTab('kontak', this)">Darurat</div>
+        </div>
+
+        <div id="tab-info" class="tab-content active">
+          <div class="info-group">
+            <div class="info-row">
+              <div class="info-icon"><i class="fas fa-calendar-alt"></i></div>
+              <div class="info-text">
+                <div class="label">Bergabung Sejak</div>
+                <div class="value">${data.tanggalBergabung}</div>
+              </div>
+            </div>
+            <div class="info-row">
+              <div class="info-icon"><i class="fas fa-envelope"></i></div>
+              <div class="info-text">
+                <div class="label">Email</div>
+                <div class="value">${data.email}</div>
+              </div>
+            </div>
+            <div class="info-row">
+              <div class="info-icon"><i class="fas fa-phone"></i></div>
+              <div class="info-text">
+                <div class="label">Telepon</div>
+                <div class="value">${data.telepon}</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div id="tab-struktur" class="tab-content">
+          <div class="info-group">
+            <div class="info-row">
+              <div class="info-icon"><i class="fas fa-building"></i></div>
+              <div class="info-text">
+                <div class="label">Divisi / Departemen</div>
+                <div class="value">${data.divisi}</div>
+              </div>
+            </div>
+            <div class="info-row">
+              <div class="info-icon"><i class="fas fa-briefcase"></i></div>
+              <div class="info-text">
+                <div class="label">Jabatan</div>
+                <div class="value">${data.jabatan}</div>
+              </div>
+            </div>
+            <div class="info-row">
+              <div class="info-icon"><i class="fas fa-map-marker-alt"></i></div>
+              <div class="info-text">
+                <div class="label">Cabang / Penempatan</div>
+                <div class="value">${data.cabang}</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div id="tab-kontak" class="tab-content">
+          ${kontakHtml}
+        </div>
+
+        <div class="footer">
+          <div><i class="fas fa-shield-check"></i> Data bersifat rahasia. Hanya untuk internal.</div>
+          <div style="margin-top: 4px;">&copy; 2024 Los Ciken. All rights reserved.</div>
+        </div>
+      `;
+    }
+
+    function switchTab(tabId, element) {
+      document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+      document.querySelectorAll('.tab').forEach(el => el.classList.remove('active'));
+      document.getElementById('tab-' + tabId).classList.add('active');
+      element.classList.add('active');
+    }
+
+    function fetchData(id) {
+      const url = \`https://docs.google.com/spreadsheets/d/\${sheetId}/gviz/tq?tqx=out:json&gid=\${sheetGid}\`;
+      
+      fetch(url)
+        .then(res => {
+          if (!res.ok) throw new Error("Akses jaringan ke Google Sheet ditolak.");
+          return res.text();
+        })
+        .then(text => {
+          // Ambil JSON murni dari respon gviz
+          const startIndex = text.indexOf('{');
+          const endIndex = text.lastIndexOf('}');
+          
+          if (startIndex === -1 || endIndex === -1) {
+            // Ini terjadi jika sheet di-private (Google mengembalikan halaman Login HTML)
+            throw new Error("Gagal membaca data. Pastikan Google Sheet Anda diatur ke 'Anyone with the link can view' (Siapa saja yang memiliki link dapat melihat).");
+          }
+
+          const jsonStr = text.substring(startIndex, endIndex + 1);
+          const data = JSON.parse(jsonStr);
+          const rows = data.table.rows;
+          
+          let found = null;
+          // Loop mulai dari indeks 3 (Baris 4 di Spreadsheet)
+          for (let i = 3; i < rows.length; i++) {
+             const row = rows[i].c;
+             if (row && row[0] && row[0].v === id) {
+               
+               // Ambil tanggal dengan aman
+               let tgl = '-';
+               if (row[16]) {
+                 tgl = row[16].f || row[16].v || '-';
+               }
+
+               found = {
+                 id: (row[0] && row[0].v) || '-',
+                 namaLengkap: (row[2] && row[2].v) || '-',
+                 email: (row[3] && row[3].v) || '-',
+                 telepon: (row[4] && row[4].v) || '-',
+                 foto: (row[6] && row[6].v) || 'https://via.placeholder.com/150',
+                 jabatan: (row[14] && row[14].v) || '-',
+                 cabang: (row[15] && row[15].v) || '-',
+                 tanggalBergabung: String(tgl),
+                 status: (row[18] && row[18].v) || '-',
+                 divisi: (row[14] && row[14].v) || '-',
+                 kontakDarurat: {
+                   nama: (row[30] && row[30].v) || '-',
+                   hubungan: (row[31] && row[31].v) || '-',
+                   telepon: (row[32] && row[32].v) || '-'
+                 }
+               };
+               break;
+             }
+          }
+          
+          if (found) {
+            renderData(found);
+          } else {
+            showError("Data Karyawan dengan ID " + id + " tidak ditemukan di Database Karyawan.");
+          }
+        })
+        .catch(err => {
+          console.error(err);
+          showError(err.message);
+        });
+    }
+
+    // Jalankan saat halaman dimuat
+    window.onload = init;
+  </script>
 </body>
 </html>
