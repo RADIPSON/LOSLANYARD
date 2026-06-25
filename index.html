@@ -453,7 +453,7 @@
           
           <!-- Hero Card -->
           <div class="profile-hero">
-            <img src="${data.foto}" crossorigin="anonymous" alt="Foto" class="hero-avatar" onerror="this.src='https://ui-avatars.com/api/?name=${encodeURIComponent(data.namaLengkap)}&background=0a4f2b&color=fff&size=150'">
+            <img src="${data.foto}" crossorigin="anonymous" alt="Foto" class="hero-avatar" onerror="this.onerror=null; this.src='https://ui-avatars.com/api/?name=${encodeURIComponent(data.namaLengkap)}&background=0a4f2b&color=fff&size=150'">
             <div class="hero-info">
               <h1 class="hero-name">${data.namaLengkap}</h1>
               <div class="hero-jabatan">${data.jabatan}</div>
@@ -570,7 +570,7 @@
               </div>
               <div style="height: 8px; background: repeating-linear-gradient(45deg, #0a4f2b, #0a4f2b 10px, #10663a 10px, #10663a 20px);"></div>
               <div class="id-card-body">
-                <img src="${data.foto}" crossorigin="anonymous" style="width: 130px; height: 130px; border-radius: 50%; object-fit: cover; border: 4px solid var(--primary-light); margin-bottom: 20px;" onerror="this.src='https://ui-avatars.com/api/?name=${encodeURIComponent(data.namaLengkap)}&background=0a4f2b&color=fff&size=150'">
+                <img src="${data.foto}" crossorigin="anonymous" style="width: 130px; height: 130px; border-radius: 50%; object-fit: cover; border: 4px solid var(--primary-light); margin-bottom: 20px;" onerror="this.onerror=null; this.src='https://ui-avatars.com/api/?name=${encodeURIComponent(data.namaLengkap)}&background=0a4f2b&color=fff&size=150'">
                 <h2 style="font-size: 20px; color: var(--text-dark); margin-bottom: 6px; line-height: 1.2;">${data.namaLengkap}</h2>
                 <div style="font-size: 14px; font-weight: 600; color: var(--success); margin-bottom: 16px;">${data.jabatan}</div>
                 
@@ -651,13 +651,16 @@
              if (row && row[0] && row[0].v === id) {
                let tgl = '-';
                if (row[16]) tgl = row[16].f || row[16].v || '-';
+               let rawFoto = (row[6] && row[6].v) ? String(row[6].v) : '';
+               let namaKaryawan = (row[2] && row[2].v) || 'Karyawan';
+               let validFoto = rawFoto.startsWith('http') ? rawFoto : ('https://ui-avatars.com/api/?name=' + encodeURIComponent(namaKaryawan) + '&background=0a4f2b&color=fff&size=150');
 
                found = {
                  id: (row[0] && row[0].v) || '-',
-                 namaLengkap: (row[2] && row[2].v) || '-',
+                 namaLengkap: namaKaryawan,
                  email: (row[3] && row[3].v) || '-',
                  telepon: (row[4] && row[4].v) || '-',
-                 foto: (row[6] && row[6].v) || 'https://via.placeholder.com/150',
+                 foto: validFoto,
                  jabatan: (row[14] && row[14].v) || '-',
                  cabang: (row[15] && row[15].v) || '-',
                  tanggalBergabung: String(tgl),
