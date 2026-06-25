@@ -421,7 +421,7 @@
     }
 
     function fetchData(id) {
-      const url = \`https://docs.google.com/spreadsheets/d/\${sheetId}/gviz/tq?tqx=out:json&gid=\${sheetGid}\`;
+      const url = `https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?tqx=out:json&gid=${sheetGid}`;
       
       fetch(url)
         .then(res => {
