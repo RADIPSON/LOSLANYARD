@@ -653,11 +653,31 @@
                if (row[16]) tgl = row[16].f || row[16].v || '-';
                let rawFoto = (row[6] && row[6].v) ? String(row[6].v) : '';
                let namaKaryawan = (row[2] && row[2].v) || 'Karyawan';
-               let validFoto = rawFoto.startsWith('http') ? rawFoto : ('https://ui-avatars.com/api/?name=' + encodeURIComponent(namaKaryawan) + '&background=0a4f2b&color=fff&size=150');
-               
-               // Proxy Google Drive images to bypass CORS restrictions
-               if (validFoto.includes('drive.google.com')) {
-                 validFoto = 'https://corsproxy.io/?' + encodeURIComponent(validFoto);
+               let validFoto = ('https://ui-avatars.com/api/?name=' + encodeURIComponent(namaKaryawan) + '&background=0a4f2b&color=fff&size=150');
+
+               if (rawFoto && rawFoto.startsWith('http')) {
+                 // Konversi URL Google Drive ke format lh3.googleusercontent.com (tanpa CORS)
+                 // Sama dengan yang dipakai di loshris
+                 if (rawFoto.includes('drive.google.com') || rawFoto.includes('lh3.googleusercontent.com')) {
+                   // Cari file ID dari berbagai format URL Drive
+                   let driveId = null;
+                   // Format: /file/d/FILE_ID/view  atau  /d/FILE_ID
+                   let m = rawFoto.match(/\/d\/([a-zA-Z0-9_-]{10,})/);
+                   if (m) driveId = m[1];
+                   // Format: ?id=FILE_ID  atau  open?id=FILE_ID
+                   if (!driveId) { m = rawFoto.match(/[?&]id=([a-zA-Z0-9_-]{10,})/); if (m) driveId = m[1]; }
+                   // Format: thumbnail?id=FILE_ID
+                   if (!driveId) { m = rawFoto.match(/thumbnail\?id=([a-zA-Z0-9_-]{10,})/); if (m) driveId = m[1]; }
+
+                   if (driveId) {
+                     // Gunakan lh3.googleusercontent.com/d/ — format yang dipakai loshris, tanpa CORS
+                     validFoto = 'https://lh3.googleusercontent.com/d/' + driveId;
+                   } else {
+                     validFoto = rawFoto; // fallback pakai URL aslinya
+                   }
+                 } else {
+                   validFoto = rawFoto; // URL biasa (bukan Drive), langsung pakai
+                 }
                }
 
                found = {
