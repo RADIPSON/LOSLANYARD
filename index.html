@@ -256,8 +256,9 @@
   </footer>
 
   <script>
-    const sheetId = '1kjiHj3J5pX_V0ZbMiyl6dnAQ99oHxPDQ2G0q69bJUlg';
-    const sheetGid = '343518669'; 
+    // URL Apps Script Web App — Sheet tetap private, ini yang jadi proxy API
+    // Ganti URL ini setelah deploy Apps Script sebagai Web App
+    const appsScriptUrl = 'https://script.google.com/macros/s/AKfycbxmOqgwjMHpXcSlqyYdbdTzDXuauv487QdOf_fJl4d1KpVbPbg8VMle49CqPiwq98zr/exec';
     const urlParams = new URLSearchParams(window.location.search);
     const employeeId = urlParams.get('id');
 
@@ -629,80 +630,21 @@
     }
 
     function fetchData(id) {
-      const url = `https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?tqx=out:json&gid=${sheetGid}`;
+      // Panggil Apps Script sebagai proxy — Sheet tetap private
+      // Apps Script hanya return data 1 karyawan berdasarkan ID, tidak bisa dump semua data
+      const url = appsScriptUrl + '?mode=api&id=' + encodeURIComponent(id);
       
       fetch(url)
         .then(res => {
-          if (!res.ok) throw new Error("Akses ditolak.");
-          return res.text();
+          if (!res.ok) throw new Error("Gagal terhubung ke server.");
+          return res.json();
         })
-        .then(text => {
-          const startIndex = text.indexOf('{');
-          const endIndex = text.lastIndexOf('}');
-          if (startIndex === -1 || endIndex === -1) throw new Error("Sheet diprivate.");
-          
-          const jsonStr = text.substring(startIndex, endIndex + 1);
-          const data = JSON.parse(jsonStr);
-          const rows = data.table.rows;
-          
-          let found = null;
-          for (let i = 3; i < rows.length; i++) {
-             const row = rows[i].c;
-             if (row && row[0] && row[0].v === id) {
-               let tgl = '-';
-               if (row[16]) tgl = row[16].f || row[16].v || '-';
-               let rawFoto = (row[6] && row[6].v) ? String(row[6].v) : '';
-               let namaKaryawan = (row[2] && row[2].v) || 'Karyawan';
-               let validFoto = ('https://ui-avatars.com/api/?name=' + encodeURIComponent(namaKaryawan) + '&background=0a4f2b&color=fff&size=150');
-
-               if (rawFoto && rawFoto.startsWith('http')) {
-                 // Konversi URL Google Drive ke format lh3.googleusercontent.com (tanpa CORS)
-                 // Sama dengan yang dipakai di loshris
-                 if (rawFoto.includes('drive.google.com') || rawFoto.includes('lh3.googleusercontent.com')) {
-                   // Cari file ID dari berbagai format URL Drive
-                   let driveId = null;
-                   // Format: /file/d/FILE_ID/view  atau  /d/FILE_ID
-                   let m = rawFoto.match(/\/d\/([a-zA-Z0-9_-]{10,})/);
-                   if (m) driveId = m[1];
-                   // Format: ?id=FILE_ID  atau  open?id=FILE_ID
-                   if (!driveId) { m = rawFoto.match(/[?&]id=([a-zA-Z0-9_-]{10,})/); if (m) driveId = m[1]; }
-                   // Format: thumbnail?id=FILE_ID
-                   if (!driveId) { m = rawFoto.match(/thumbnail\?id=([a-zA-Z0-9_-]{10,})/); if (m) driveId = m[1]; }
-
-                   if (driveId) {
-                     // Gunakan lh3.googleusercontent.com/d/ — format yang dipakai loshris, tanpa CORS
-                     validFoto = 'https://lh3.googleusercontent.com/d/' + driveId;
-                   } else {
-                     validFoto = rawFoto; // fallback pakai URL aslinya
-                   }
-                 } else {
-                   validFoto = rawFoto; // URL biasa (bukan Drive), langsung pakai
-                 }
-               }
-
-               found = {
-                 id: (row[0] && row[0].v) || '-',
-                 namaLengkap: namaKaryawan,
-                 email: (row[3] && row[3].v) || '-',
-                 telepon: (row[4] && row[4].v) || '-',
-                 foto: validFoto,
-                 jabatan: (row[14] && row[14].v) || '-',
-                 cabang: (row[15] && row[15].v) || '-',
-                 tanggalBergabung: String(tgl),
-                 status: (row[18] && row[18].v) || '-',
-                 divisi: (row[14] && row[14].v) || '-',
-                 kontakDarurat: {
-                   nama: (row[30] && row[30].v) || '-',
-                   hubungan: (row[31] && row[31].v) || '-',
-                   telepon: (row[32] && row[32].v) || '-'
-                 }
-               };
-               break;
-             }
+        .then(result => {
+          if (result.ok && result.data) {
+            renderData(result.data);
+          } else {
+            showError(result.error || "Data ID " + id + " tidak ditemukan.");
           }
-          
-          if (found) renderData(found);
-          else showError("Data ID " + id + " tidak ditemukan.");
         })
         .catch(err => {
           console.error(err);
