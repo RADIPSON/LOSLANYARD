@@ -642,35 +642,52 @@
     }
 
     function fetchData(id) {
-      // Menggunakan metode POST agar tidak terkena CORS/redirect issue ke login page
-      fetch(appsScriptUrl, {
-        method: 'POST',
-        body: JSON.stringify({
-          function: 'getEmployeeData',
-          args: [id]
-        }),
-        headers: { 'Content-Type': 'text/plain;charset=utf-8' }
-      })
-      .then(res => res.json())
-      .then(result => {
-        if (result.status === 'success') {
-          if (result.result) {
-            renderData(result.result);
-          } else {
-            showError("Data ID " + id + " tidak ditemukan.");
+      // Menggunakan metode GViz langsung ke Google Sheets untuk menghindari masalah CORS Apps Script
+      const sheetId = '1kjiHj3J5pX_V0ZbMiyl6dnAQ99oHxPDQ2G0q69bJUlg';
+      const gid = '343518669';
+      const url = `https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?tqx=out:json&gid=${gid}`;
+      
+      fetch(url)
+        .then(res => res.text())
+        .then(text => {
+          const jsonStr = text.substring(text.indexOf('{'), text.lastIndexOf('}') + 1);
+          const data = JSON.parse(jsonStr);
+          const rows = data.table.rows;
+          
+          let found = null;
+          for (let i = 0; i < rows.length; i++) {
+             const row = rows[i].c;
+             if (row && row[0] && row[0].v === id) {
+               found = {
+                 id: (row[0] && row[0].v) || '-',
+                 namaLengkap: (row[2] && row[2].v) || '-',
+                 email: (row[3] && row[3].v) || '-',
+                 telepon: (row[4] && row[4].v) || '-',
+                 foto: (row[6] && row[6].v) || 'https://ui-avatars.com/api/?name=Karyawan',
+                 jabatan: (row[14] && row[14].v) || '-',
+                 cabang: (row[15] && row[15].v) || '-',
+                 tanggalBergabung: (row[16] && row[16].f) || (row[16] && row[16].v) || '-',
+                 status: (row[18] && row[18].v) || '-',
+                 divisi: (row[14] && row[14].v) || '-',
+                 kontakDarurat: {
+                   nama: (row[30] && row[30].v) || '-',
+                   hubungan: (row[31] && row[31].v) || '-',
+                   telepon: (row[32] && row[32].v) || '-'
+                 }
+               };
+               break;
+             }
           }
-        } else {
-          // Jika backend menggunakan format dari Code.js lanyard (?mode=api):
-          if (result.ok && result.data) {
-             renderData(result.data);
+          
+          if (found) {
+            renderData(found);
           } else {
-             showError(result.error || result.message || "Data ID " + id + " tidak ditemukan.");
+            showError("Data Karyawan dengan ID " + id + " tidak ditemukan di Database.");
           }
-        }
-      })
-      .catch(err => {
-        showError("Gagal terhubung ke server (Failed to fetch). Pastikan URL Web App benar dan bisa diakses publik. Error: " + err.message);
-      });
+        })
+        .catch(err => {
+          showError("Gagal mengambil data dari Google Sheets. Pastikan Sheet Anda tidak dikunci privasi. Error: " + err.message);
+        });
     }
   </script>
 </body>
