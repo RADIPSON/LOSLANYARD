@@ -642,26 +642,35 @@
     }
 
     function fetchData(id) {
-      // Panggil Apps Script sebagai proxy — Sheet tetap private
-      // Apps Script hanya return data 1 karyawan berdasarkan ID, tidak bisa dump semua data
-      const url = appsScriptUrl + '?mode=api&id=' + encodeURIComponent(id);
-      
-      fetch(url)
-        .then(res => {
-          if (!res.ok) throw new Error("Gagal terhubung ke server.");
-          return res.json();
-        })
-        .then(result => {
-          if (result.ok && result.data) {
-            renderData(result.data);
+      // Menggunakan metode POST agar tidak terkena CORS/redirect issue ke login page
+      fetch(appsScriptUrl, {
+        method: 'POST',
+        body: JSON.stringify({
+          function: 'getEmployeeData',
+          args: [id]
+        }),
+        headers: { 'Content-Type': 'text/plain;charset=utf-8' }
+      })
+      .then(res => res.json())
+      .then(result => {
+        if (result.status === 'success') {
+          if (result.result) {
+            renderData(result.result);
           } else {
-            showError(result.error || "Data ID " + id + " tidak ditemukan.");
+            showError("Data ID " + id + " tidak ditemukan.");
           }
-        })
-        .catch(err => {
-          console.error(err);
-          showError(err.message);
-        });
+        } else {
+          // Jika backend menggunakan format dari Code.js lanyard (?mode=api):
+          if (result.ok && result.data) {
+             renderData(result.data);
+          } else {
+             showError(result.error || result.message || "Data ID " + id + " tidak ditemukan.");
+          }
+        }
+      })
+      .catch(err => {
+        showError("Gagal terhubung ke server (Failed to fetch). Pastikan URL Web App benar dan bisa diakses publik. Error: " + err.message);
+      });
     }
   </script>
 </body>
