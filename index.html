@@ -665,7 +665,25 @@
 
       setupScrollSpy();
     }
+function convertDriveUrl(rawUrl, namaFallback) {
+  const fallback = 'https://ui-avatars.com/api/?name=' + encodeURIComponent(namaFallback || 'Karyawan') + '&background=0a4f2b&color=fff&size=150';
 
+  if (!rawUrl || rawUrl.trim() === '') return fallback;
+  if (!rawUrl.startsWith('http')) return fallback;
+
+  if (!rawUrl.includes('drive.google.com') && !rawUrl.includes('lh3.googleusercontent.com')) {
+    return rawUrl;
+  }
+
+  let driveId = null;
+  let m = rawUrl.match(/\/d\/([a-zA-Z0-9_-]{10,})/);
+  if (m) driveId = m[1];
+  if (!driveId) { m = rawUrl.match(/[?&]id=([a-zA-Z0-9_-]{10,})/); if (m) driveId = m[1]; }
+  if (!driveId) { m = rawUrl.match(/thumbnail\?id=([a-zA-Z0-9_-]{10,})/); if (m) driveId = m[1]; }
+
+  if (driveId) return 'https://lh3.googleusercontent.com/d/' + driveId;
+  return rawUrl;
+}
     function fetchData(id) {
       // Menggunakan metode GViz langsung ke Google Sheets untuk menghindari masalah CORS Apps Script
       const sheetId = '1kjiHj3J5pX_V0ZbMiyl6dnAQ99oHxPDQ2G0q69bJUlg';
