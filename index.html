@@ -412,7 +412,7 @@
       let d = (divisi || '').toLowerCase();
       let j = (jabatan || '').toLowerCase();
 
-      if(d.includes("operasional")) divHead = "Kepala Divisi Operasional";
+      if(d.includes("operasional") || d.includes("treasurer")) divHead = "Kepala Divisi Operasional";
       else if(d.includes("human resource")) divHead = "Kepala Human Resource";
       else if(d.includes("finance")) divHead = "Kepala Divisi Finance";
 
@@ -556,18 +556,43 @@
           <div id="sec-lokasi" class="section-card">
             <div class="section-header"><i class="fas fa-map-marker-alt"></i> Lokasi Cabang</div>
             <p style="color:var(--text-gray); margin-bottom:20px; font-size:14px;">Temukan outlet Los Ciken terdekat melalui Google Maps.</p>
-            <a href="https://share.google/a79lAPallXgbo41iU" target="_blank" class="btn btn-link">
-              <i class="fas fa-map-pin" style="color:#ef4444; width:20px;"></i> Los Ciken Jalan Kaliurang <i class="fas fa-external-link-alt" style="margin-left:auto; color:var(--text-light); font-size:12px;"></i>
-            </a>
-            <a href="https://share.google/K4DegAIo5DLB5TPRC" target="_blank" class="btn btn-link">
-              <i class="fas fa-map-pin" style="color:#ef4444; width:20px;"></i> Los Ciken Condongcatur <i class="fas fa-external-link-alt" style="margin-left:auto; color:var(--text-light); font-size:12px;"></i>
-            </a>
-            <a href="https://share.google/ETRm2GzbNezZjMx84" target="_blank" class="btn btn-link">
-              <i class="fas fa-map-pin" style="color:#ef4444; width:20px;"></i> Los Ciken Selokan Mataram <i class="fas fa-external-link-alt" style="margin-left:auto; color:var(--text-light); font-size:12px;"></i>
-            </a>
-            <a href="https://share.google/zaz4YtZzcwNP9O6Kr" target="_blank" class="btn btn-link" style="margin-bottom:0;">
-              <i class="fas fa-map-pin" style="color:#ef4444; width:20px;"></i> Los Ciken Jalan Damai <i class="fas fa-external-link-alt" style="margin-left:auto; color:var(--text-light); font-size:12px;"></i>
-            </a>
+            <div style="display: grid; grid-template-columns: 1fr; gap: 20px;">
+              <!-- Cabang 1 -->
+              <div style="border: 1px solid var(--border); border-radius: 12px; overflow: hidden; background: white; box-shadow: 0 2px 4px rgba(0,0,0,0.02);">
+                <iframe src="https://maps.google.com/maps?q=Los+Ciken+Jalan+Kaliurang&t=m&z=15&output=embed&iwloc=near" width="100%" height="200" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+                <div style="padding: 16px;">
+                  <h4 style="margin:0 0 12px 0; font-size: 15px; color: var(--text-dark); display: flex; align-items: center; gap: 8px;"><i class="fas fa-store" style="color:var(--primary);"></i> Los Ciken Jalan Kaliurang</h4>
+                  <a href="https://share.google/a79lAPallXgbo41iU" target="_blank" class="btn btn-primary" style="width: 100%; padding: 12px; font-size: 14px;"><i class="fas fa-directions"></i> Buka di Google Maps</a>
+                </div>
+              </div>
+              
+              <!-- Cabang 2 -->
+              <div style="border: 1px solid var(--border); border-radius: 12px; overflow: hidden; background: white; box-shadow: 0 2px 4px rgba(0,0,0,0.02);">
+                <iframe src="https://maps.google.com/maps?q=Los+Ciken+Condongcatur&t=m&z=15&output=embed&iwloc=near" width="100%" height="200" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+                <div style="padding: 16px;">
+                  <h4 style="margin:0 0 12px 0; font-size: 15px; color: var(--text-dark); display: flex; align-items: center; gap: 8px;"><i class="fas fa-store" style="color:var(--primary);"></i> Los Ciken Condongcatur</h4>
+                  <a href="https://share.google/K4DegAIo5DLB5TPRC" target="_blank" class="btn btn-primary" style="width: 100%; padding: 12px; font-size: 14px;"><i class="fas fa-directions"></i> Buka di Google Maps</a>
+                </div>
+              </div>
+
+              <!-- Cabang 3 -->
+              <div style="border: 1px solid var(--border); border-radius: 12px; overflow: hidden; background: white; box-shadow: 0 2px 4px rgba(0,0,0,0.02);">
+                <iframe src="https://maps.google.com/maps?q=Los+Ciken+Selokan+Mataram&t=m&z=15&output=embed&iwloc=near" width="100%" height="200" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+                <div style="padding: 16px;">
+                  <h4 style="margin:0 0 12px 0; font-size: 15px; color: var(--text-dark); display: flex; align-items: center; gap: 8px;"><i class="fas fa-store" style="color:var(--primary);"></i> Los Ciken Selokan Mataram</h4>
+                  <a href="https://share.google/ETRm2GzbNezZjMx84" target="_blank" class="btn btn-primary" style="width: 100%; padding: 12px; font-size: 14px;"><i class="fas fa-directions"></i> Buka di Google Maps</a>
+                </div>
+              </div>
+
+              <!-- Cabang 4 -->
+              <div style="border: 1px solid var(--border); border-radius: 12px; overflow: hidden; background: white; box-shadow: 0 2px 4px rgba(0,0,0,0.02);">
+                <iframe src="https://maps.google.com/maps?q=Los+Ciken+Jalan+Damai&t=m&z=15&output=embed&iwloc=near" width="100%" height="200" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+                <div style="padding: 16px;">
+                  <h4 style="margin:0 0 12px 0; font-size: 15px; color: var(--text-dark); display: flex; align-items: center; gap: 8px;"><i class="fas fa-store" style="color:var(--primary);"></i> Los Ciken Jalan Damai</h4>
+                  <a href="https://share.google/zaz4YtZzcwNP9O6Kr" target="_blank" class="btn btn-primary" style="width: 100%; padding: 12px; font-size: 14px;"><i class="fas fa-directions"></i> Buka di Google Maps</a>
+                </div>
+              </div>
+            </div>
           </div>
 
           <!-- 5. QR & Virtual ID Card -->
