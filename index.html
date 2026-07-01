@@ -706,7 +706,7 @@ function convertDriveUrl(rawUrl, namaFallback) {
                  namaLengkap: (row[2] && row[2].v) || '-',
                  email: (row[3] && row[3].v) || '-',
                  telepon: (row[4] && row[4].v) || '-',
-                 foto: (row[6] && row[6].v) || 'https://ui-avatars.com/api/?name=Karyawan',
+                 ffoto: convertDriveUrl((row[6] && row[6].v) || '', (row[2] && row[2].v) || 'Karyawan'),
                  jabatan: (row[14] && row[14].v) || '-',
                  cabang: (row[15] && row[15].v) || '-',
                  tanggalBergabung: (row[16] && row[16].f) || (row[16] && row[16].v) || '-',
